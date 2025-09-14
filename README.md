@@ -4,3 +4,4 @@ Project members:<br>
 Scrum Lead: Manav Bharath<br>
 DevOps Lead: Cherry Lin<br>
 QA Lead: Charvi Konduru<br>
+Requirements Lead: Matthew Janicki<br>
