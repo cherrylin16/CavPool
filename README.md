@@ -2,3 +2,4 @@
 test
 Project members:
 Scrum Lead: Manav Bharath
+DevOps Lead: Cherry Lin
