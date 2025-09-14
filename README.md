@@ -1,4 +1,6 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/k4pNZww7)
-test
-Project members:
-Scrum Lead: Manav Bharath
+[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/k4pNZww7)<br>
+test<br>
+Project members:<br>
+Scrum Lead: Manav Bharath<br>
+DevOps Lead: Cherry Lin<br>
+QA Lead: Charvi Konduru<br>
