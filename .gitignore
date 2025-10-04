@@ -6,6 +6,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+a01/
 
 # Python cache
 __pycache__/
