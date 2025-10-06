@@ -5,3 +5,7 @@ Requirements Lead: Matthew Janicki
 QA Testing Lead: Charvi Konduru  
 Development Lead: Han Fan
 
+## Sprint 3
+Landing Page: Charvi <br>
+Dashboard: Cherry <br>
+User Profile: Matthew <br>
