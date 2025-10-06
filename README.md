@@ -10,3 +10,4 @@ Landing Page: Charvi <br>
 Dashboard: Cherry <br>
 User Profile: Matthew <br>
 Google Login: Manav <br>
+Goal: Views by end of this week 10/11. 
