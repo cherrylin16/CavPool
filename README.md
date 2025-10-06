@@ -9,3 +9,4 @@ Development Lead: Han Fan
 Landing Page: Charvi <br>
 Dashboard: Cherry <br>
 User Profile: Matthew <br>
+Google Login: Manav <br>
