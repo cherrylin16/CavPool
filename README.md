@@ -6,6 +6,6 @@ QA Testing Lead: Charvi Konduru
 Development Lead: Han Fan
 
 ## Sprint 3
-Landing Page: Charvi
-Dashboard: Cherry
-User Profile: Matthew
+Landing Page: Charvi <br>
+Dashboard: Cherry <br>
+User Profile: Matthew <br>
