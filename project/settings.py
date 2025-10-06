@@ -80,7 +80,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'ridesharing.wsgi.application'
+WSGI_APPLICATION = 'project.wsgi.application'
 
 
 # Database
