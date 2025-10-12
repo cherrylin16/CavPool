@@ -11,20 +11,24 @@
   <title>Ride-Sharing Landing Page</title>
 </head>
 <body>
+
+
+  <div class="text-end w-100">
+    <div class="text-end">
+      <button type="button" class="btn btn-primary btn-block w-8 py-2" style="margin-top: 5px;">Login</button>
+      <button type="button" class="btn btn-outline-primary btn-block w-8 py-2" style="margin-top: 5px; margin-right: 10px;">Create Account</button>
+    </div>
+  </div>
+
+
   <div class="text-center mt-5">
     <h1>Welcome to Ride-Sharing App</h1>
     <p class="lead">Plan carpools, share rides, and connect with others.</p>
   </div>
 
-  <div class="text-center mt-4">
-    <a href="{% url 'account_login' %}" class="btn btn-primary btn-lg mx-2">Login</a>
-    <a href="{% url 'account_signup' %}" class="btn btn-outline-primary btn-lg mx-2">Create Account</a>
-  </div>
-
+  <!-- google login stub -->
   <div class="text-center mt-3">
-    <a href="{% provider_login_url 'google' %}" class="btn btn-danger btn-lg">
-      Sign in with Google
-    </a>
+    <a href="#" class="btn btn-danger btn-lg">Sign in with Google</a>
   </div>
 
 </body>
