@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h2 class="text-center mb-4">Login</h2>
+                        
+                        {% load socialaccount %}
+                        {% if messages %}
+                            {% for message in messages %}
+                                <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                            {% endfor %}
+                        {% endif %}
+
+                        <form method="post" class="mb-3">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label class="form-label">Email or Username</label>
+                                <input type="text" name="login" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Password</label>
+                                <input type="password" name="password" class="form-control" required>
+                            </div>
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" name="remember" class="form-check-input">
+                                <label class="form-check-label">Remember me</label>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">Sign In</button>
+                        </form>
+
+                        <hr>
+                        
+                        <a href="{% provider_login_url 'google' %}" class="btn btn-danger w-100 mb-3">
+                            Sign in with Google
+                        </a>
+
+                        <div class="text-center">
+                            <p><a href="{% url 'account_signup' %}">Don't have an account? Sign up</a></p>
+                            <p><a href="{% url 'account_reset_password' %}">Forgot password?</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
