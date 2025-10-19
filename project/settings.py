@@ -36,12 +36,12 @@ DEBUG = True
 
 IS_HEROKU_APP = "DYNO" in os.environ and "CI" not in os.environ
 
-if IS_HEROKU_APP:   
-    ALLOWED_HOSTS = ["*"]
-
+if IS_HEROKU_APP:
+    ALLOWED_HOSTS = ["django-a01-0dabbeee12a4.herokuapp.com"]
     SECURE_SSL_REDIRECT = True
 else:
-    ALLOWED_HOSTS = ["django-a01-0dabbeee12a4.herokuapp.com", ".localhost", "127.0.0.1", "[::1]", "0.0.0.0", "[::]"]
+    ALLOWED_HOSTS = [".localhost", "127.0.0.1", "[::1]"]
+
 
 
 # Application definition
@@ -86,7 +86,6 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.contrib.sites.middleware.CurrentSiteMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -190,7 +189,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
-CSRF_TRUSTED_ORIGINS = ['https://django-a01-0dabbeee12a4.herokuapp.com']
+CSRF_TRUSTED_ORIGINS = [
+    "https://django-a01-0dabbeee12a4.herokuapp.com",
+    "http://127.0.0.1",
+    "http://localhost",
+]
 
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
@@ -234,15 +237,15 @@ else:
 
 # Heroku-specific settings
 if IS_HEROKU_APP:
+    SESSION_ENGINE = "django.contrib.sessions.backends.db"
     SESSION_COOKIE_SECURE = True
     SESSION_COOKIE_HTTPONLY = True
-    SESSION_EXPIRE_AT_BROWSER_CLOSE = True
-    SOCIALACCOUNT_STORE_TOKENS = False
-    # Fix OAuth state issues
+    SESSION_COOKIE_SAMESITE = "None"
+
+    CSRF_COOKIE_SECURE = True
+    CSRF_COOKIE_SAMESITE = "None"
+
+    SESSION_EXPIRE_AT_BROWSER_CLOSE = False  # required for stable OAuth
+    SESSION_SAVE_EVERY_REQUEST = False       
     SOCIALACCOUNT_LOGIN_ON_GET = True
-    # Force session regeneration on login
-    SESSION_SAVE_EVERY_REQUEST = True
-    # Clear sessions more aggressively
-    SESSION_COOKIE_AGE = 3600  # 1 hour
-
-
+    SOCIALACCOUNT_STORE_TOKENS = False
