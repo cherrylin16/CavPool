@@ -41,7 +41,7 @@ if IS_HEROKU_APP:
 
     SECURE_SSL_REDIRECT = True
 else:
-    ALLOWED_HOSTS = ["https://django-a01-0dabbeee12a4.herokuapp.com", ".localhost", "127.0.0.1", "[::1]", "0.0.0.0", "[::]"]
+    ALLOWED_HOSTS = ["django-a01-0dabbeee12a4.herokuapp.com", ".localhost", "127.0.0.1", "[::1]", "0.0.0.0", "[::]"]
 
 
 # Application definition
@@ -86,6 +86,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.contrib.sites.middleware.CurrentSiteMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -189,7 +190,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
-CSRF_TRUSTED_ORIGINS = ['https://django-a01-0dabbeee12a4.herokuapp.com/']
+CSRF_TRUSTED_ORIGINS = ['https://django-a01-0dabbeee12a4.herokuapp.com']
 
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
@@ -199,22 +200,37 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 # Custom User Model
 AUTH_USER_MODEL = 'accounts.User'
 # Google OAuth Configuration
-SOCIALACCOUNT_PROVIDERS = {
-    'google': {
-        'APP': {
-            'client_id': os.getenv('GOOGLE_CLIENT_ID'),
-            'secret': os.getenv('GOOGLE_CLIENT_SECRET'),
-            'key': ''
-        },
-        'SCOPE': [
-            'profile',
-            'email',
-        ],
-        'AUTH_PARAMS': {
-            'access_type': 'online',
+if IS_HEROKU_APP:
+    # Use database Social Application on Heroku
+    SOCIALACCOUNT_PROVIDERS = {
+        'google': {
+            'SCOPE': [
+                'profile',
+                'email',
+            ],
+            'AUTH_PARAMS': {
+                'access_type': 'online',
+            }
         }
     }
-}
+else:
+    # Use settings configuration for local development
+    SOCIALACCOUNT_PROVIDERS = {
+        'google': {
+            'APP': {
+                'client_id': os.getenv('GOOGLE_CLIENT_ID'),
+                'secret': os.getenv('GOOGLE_CLIENT_SECRET'),
+                'key': ''
+            },
+            'SCOPE': [
+                'profile',
+                'email',
+            ],
+            'AUTH_PARAMS': {
+                'access_type': 'online',
+            }
+        }
+    }
 
 # Heroku-specific settings
 if IS_HEROKU_APP:
@@ -229,10 +245,4 @@ if IS_HEROKU_APP:
     # Clear sessions more aggressively
     SESSION_COOKIE_AGE = 3600  # 1 hour
 
-# For django admin
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
-CSRF_TRUSTED_ORIGINS = [
-    "https://django-a01-0dabbeee12a4.herokuapp.com",
-]
+
