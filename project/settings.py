@@ -158,3 +158,11 @@ WHITENOIES_KEEP_ONLY_HASHED_FILES = True
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+CSRF_TRUSTED_ORIGINS = ['https://django-a01-0dabbeee12a4.herokuapp.com/']
+
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+
