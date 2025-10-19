@@ -41,7 +41,7 @@ if IS_HEROKU_APP:
 
     SECURE_SSL_REDIRECT = True
 else:
-    ALLOWED_HOSTS = ["https://django-a01-0dabbeee12a4.herokuapp.com/", ".localhost", "127.0.0.1", "[::1]", "0.0.0.0", "[::]"]
+    ALLOWED_HOSTS = ["https://django-a01-0dabbeee12a4.herokuapp.com", ".localhost", "127.0.0.1", "[::1]", "0.0.0.0", "[::]"]
 
 
 # Application definition
@@ -79,6 +79,7 @@ ACCOUNT_LOGIN_METHODS = {'username', 'email'}
 ACCOUNT_SIGNUP_FIELDS = {'email*', 'username*', 'password1*', 'password2*'}
 ACCOUNT_LOGOUT_ON_GET = True
 ACCOUNT_SESSION_REMEMBER = None
+SOCIALACCOUNT_AUTO_SIGNUP = True
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

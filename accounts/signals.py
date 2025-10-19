@@ -12,6 +12,12 @@ def handle_social_login(sender, request, sociallogin, **kwargs):
     if hasattr(request, '_messages'):
         request._messages.used = True
     
+    # Set username from Google data if not set
+    if not sociallogin.user.username and sociallogin.account.extra_data:
+        name = sociallogin.account.extra_data.get('name', '')
+        email = sociallogin.account.extra_data.get('email', '')
+        sociallogin.user.username = name or email.split('@')[0]
+    
     # Determine user type from referrer or session
     next_url = request.GET.get('next', '')
     user_type = None
