@@ -48,7 +48,6 @@ def rider_signup(request):
         form = CustomUserCreationForm()
     return render(request, 'accounts/rider_signup.html', {'form': form})
 
-@csrf_exempt
 def set_user_type(request, user_type):
     if request.user.is_authenticated:
         if not request.user.user_type:

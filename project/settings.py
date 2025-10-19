@@ -205,3 +205,12 @@ SOCIALACCOUNT_PROVIDERS = {
         }
     }
 }
+
+# Heroku-specific settings
+if IS_HEROKU_APP:
+    SESSION_COOKIE_SECURE = True
+    SESSION_COOKIE_HTTPONLY = True
+    SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+    SOCIALACCOUNT_STORE_TOKENS = False
+    # Fix OAuth state issues
+    SOCIALACCOUNT_LOGIN_ON_GET = True

@@ -15,11 +15,6 @@
                         <h2 class="text-center mb-4">Rider Login</h2>
                         
                         {% load socialaccount %}
-                        {% if messages %}
-                            {% for message in messages %}
-                                <div class="alert alert-{{ message.tags }}">{{ message }}</div>
-                            {% endfor %}
-                        {% endif %}
 
                         <form method="post" action="{% url 'account_login' %}" class="mb-3">
                             {% csrf_token %}
