@@ -177,6 +177,9 @@ WHITENOISE_KEEP_ONLY_HASHED_FILES = True
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
+# Custom User Model
+AUTH_USER_MODEL = 'accounts.User'
+
 # Google OAuth Configuration
 SOCIALACCOUNT_PROVIDERS = {
     'google': {

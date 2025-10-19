@@ -21,5 +21,5 @@ urlpatterns = [
     path("ridesharing/", include("ridesharing.urls")),
     path('', include('ridesharing.urls')),
     path('admin/', admin.site.urls),
-    path('accounts/', include('allauth.urls')),
+    path('accounts/', include('accounts.urls')),
 ]
