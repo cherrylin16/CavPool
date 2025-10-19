@@ -1,5 +1,5 @@
 ## Heroku Deploy Link
-https://django-a01-0dabbeee12a4.herokuapp.com/\
+https://django-a01-0dabbeee12a4.herokuapp.com/<br>
 Heroku App Name: django-a01
 
 ## Heroku CLI Commands
@@ -19,3 +19,5 @@ Dashboard: Cherry <br>
 User Profile: Matthew <br>
 Google Login: Manav <br>
 Goal: Views by end of this week 10/11. Logins by 10/18. 
+
+## Sprint 4
