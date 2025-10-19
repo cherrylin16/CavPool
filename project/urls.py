@@ -19,7 +19,8 @@ from django.urls import path, include
 
 urlpatterns = [
     path("ridesharing/", include("ridesharing.urls")),
-    path('', include('ridesharing.urls')),
     path('admin/', admin.site.urls),
     path('accounts/', include('accounts.urls')),
+    path("", include("dashboard.urls")),
+    path("", include("user_profile.urls")),
 ]
