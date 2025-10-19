@@ -5,17 +5,15 @@ from django.urls import reverse
 
 @receiver(pre_social_login)
 def handle_social_login(sender, request, sociallogin, **kwargs):
-    # Check if user_type is in session from the redirect URL
+    # Check if user_type can be determined from the next URL
     next_url = request.GET.get('next', '')
-    if 'set-user-type/driver' in next_url:
-        request.session['pending_user_type'] = 'driver'
-    elif 'set-user-type/rider' in next_url:
-        request.session['pending_user_type'] = 'rider'
+    user_type = None
     
-    # If user already exists and has no user_type, set it from session
-    if sociallogin.user.pk and not sociallogin.user.user_type:
-        user_type = request.session.get('pending_user_type')
-        if user_type:
-            sociallogin.user.user_type = user_type
-            sociallogin.user.save()
-            del request.session['pending_user_type']
+    if '/driver/' in next_url:
+        user_type = 'driver'
+    elif '/rider/' in next_url:
+        user_type = 'rider'
+    
+    # Set user type for new users or existing users without type
+    if user_type and (not sociallogin.user.pk or not sociallogin.user.user_type):
+        sociallogin.user.user_type = user_type
