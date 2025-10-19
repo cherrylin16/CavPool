@@ -235,6 +235,19 @@ else:
         }
     }
 
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {"console": {"class": "logging.StreamHandler"}},
+    "loggers": {
+        "allauth": {
+            "handlers": ["console"],
+            "level": "DEBUG",
+            "propagate": True,
+        },
+    },
+}
+
 # Heroku-specific settings
 if IS_HEROKU_APP:
     SESSION_ENGINE = "django.contrib.sessions.backends.db"
