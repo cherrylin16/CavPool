@@ -41,7 +41,7 @@ if IS_HEROKU_APP:
 
     SECURE_SSL_REDIRECT = True
 else:
-    ALLOWED_HOSTS = ["https://django-a01-0dabbeee12a4.herokuapp.com", ".localhost", "127.0.0.1", "[::1]", "0.0.0.0", "[::]"]
+    ALLOWED_HOSTS = ["django-a01-0dabbeee12a4.herokuapp.com", ".localhost", "127.0.0.1", "[::1]", "0.0.0.0", "[::]"]
 
 
 # Application definition
@@ -230,8 +230,9 @@ if IS_HEROKU_APP:
     SESSION_COOKIE_AGE = 3600  # 1 hour
 
 # For django admin
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'httpss')
 SESSION_COOKIE_SECURE = True
+SECURE_SSL_REDIRECT = True
 CSRF_COOKIE_SECURE = True
 CSRF_TRUSTED_ORIGINS = [
     "https://django-a01-0dabbeee12a4.herokuapp.com",
