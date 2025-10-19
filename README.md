@@ -1,5 +1,10 @@
 ## Heroku Deploy Link
 https://django-a01-0dabbeee12a4.herokuapp.com/
+Heroku App Name: django-a01
+
+## Heroku CLI Commands
+heroku
+heroku login
 
 ## Team Roles
 Scrum Lead: Manav Bharath  
