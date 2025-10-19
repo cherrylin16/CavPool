@@ -54,8 +54,7 @@ INSTALLED_APPS = [
 
     # Dashboard app
     'dashboard',
-    'user_profile'
-
+    'user_profile',
     'accounts',
     'django.contrib.sites',
     'allauth',

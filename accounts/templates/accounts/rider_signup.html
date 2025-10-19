@@ -29,17 +29,22 @@
 
                         <form method="post">
                             {% csrf_token %}
+                            {% if form.errors %}
+                                <div class="alert alert-danger">
+                                    {{ form.errors }}
+                                </div>
+                            {% endif %}
                             <div class="mb-3">
                                 <label class="form-label">Username</label>
-                                <input type="text" name="username" class="form-control" required>
+                                {{ form.username }}
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Password</label>
-                                <input type="password" name="password1" class="form-control" required>
+                                {{ form.password1 }}
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Confirm Password</label>
-                                <input type="password" name="password2" class="form-control" required>
+                                {{ form.password2 }}
                             </div>
                             <button type="submit" class="btn btn-success w-100">Create Rider Account</button>
                         </form>
