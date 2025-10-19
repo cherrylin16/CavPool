@@ -36,12 +36,12 @@ DEBUG = True
 
 IS_HEROKU_APP = "DYNO" in os.environ and "CI" not in os.environ
 
-if IS_HEROKU_APP:   
-    ALLOWED_HOSTS = ["*"]
-
+if IS_HEROKU_APP:
+    ALLOWED_HOSTS = ["django-a01-0dabbeee12a4.herokuapp.com"]
     SECURE_SSL_REDIRECT = True
 else:
-    ALLOWED_HOSTS = ["django-a01-0dabbeee12a4.herokuapp.com", ".localhost", "127.0.0.1", "[::1]", "0.0.0.0", "[::]"]
+    ALLOWED_HOSTS = [".localhost", "127.0.0.1", "[::1]"]
+
 
 
 # Application definition
@@ -189,7 +189,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
-CSRF_TRUSTED_ORIGINS = ['https://django-a01-0dabbeee12a4.herokuapp.com/']
+CSRF_TRUSTED_ORIGINS = [
+    "https://django-a01-0dabbeee12a4.herokuapp.com",
+    "http://127.0.0.1",
+    "http://localhost",
+]
 
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
@@ -199,28 +203,51 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 # Custom User Model
 AUTH_USER_MODEL = 'accounts.User'
 # Google OAuth Configuration
-SOCIALACCOUNT_PROVIDERS = {
-    'google': {
-        'APP': {
-            'client_id': os.getenv('GOOGLE_CLIENT_ID'),
-            'secret': os.getenv('GOOGLE_CLIENT_SECRET'),
-            'key': ''
-        },
-        'SCOPE': [
-            'profile',
-            'email',
-        ],
-        'AUTH_PARAMS': {
-            'access_type': 'online',
+if IS_HEROKU_APP:
+    # Use database Social Application on Heroku
+    SOCIALACCOUNT_PROVIDERS = {
+        'google': {
+            'SCOPE': [
+                'profile',
+                'email',
+            ],
+            'AUTH_PARAMS': {
+                'access_type': 'online',
+            }
         }
     }
-}
+else:
+    # Use settings configuration for local development
+    SOCIALACCOUNT_PROVIDERS = {
+        'google': {
+            'APP': {
+                'client_id': os.getenv('GOOGLE_CLIENT_ID'),
+                'secret': os.getenv('GOOGLE_CLIENT_SECRET'),
+                'key': ''
+            },
+            'SCOPE': [
+                'profile',
+                'email',
+            ],
+            'AUTH_PARAMS': {
+                'access_type': 'online',
+            }
+        }
+    }
 
 # Heroku-specific settings
 if IS_HEROKU_APP:
+    SESSION_ENGINE = "django.contrib.sessions.backends.db"
     SESSION_COOKIE_SECURE = True
     SESSION_COOKIE_HTTPONLY = True
-    SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+    SESSION_COOKIE_SAMESITE = "None"
+
+    CSRF_COOKIE_SECURE = True
+    CSRF_COOKIE_SAMESITE = "None"
+
+    SESSION_EXPIRE_AT_BROWSER_CLOSE = False  # required for stable OAuth
+    SESSION_SAVE_EVERY_REQUEST = False       
+    SOCIALACCOUNT_LOGIN_ON_GET = True
     SOCIALACCOUNT_STORE_TOKENS = False
     # Fix OAuth state issues
     SOCIALACCOUNT_LOGIN_ON_GET = True
