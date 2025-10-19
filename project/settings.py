@@ -12,18 +12,21 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 import os
+from dotenv import load_dotenv
 import secrets
-from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Load .env file
+load_dotenv()
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config(
+SECRET_KEY = os.getenv(
     "DJANGO_SECRET_KEY",
     default=secrets.token_urlsafe(nbytes=64),
 )
@@ -74,6 +77,8 @@ LOGIN_REDIRECT_URL = '/dashboard/'
 LOGOUT_REDIRECT_URL = '/'
 ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
 ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_LOGOUT_ON_GET = True
+ACCOUNT_SESSION_REMEMBER = None
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -183,13 +188,12 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # Custom User Model
 AUTH_USER_MODEL = 'accounts.User'
-
 # Google OAuth Configuration
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
         'APP': {
-            'client_id': config('GOOGLE_CLIENT_ID'),
-            'secret': config('GOOGLE_CLIENT_SECRET'),
+            'client_id': os.getenv('GOOGLE_CLIENT_ID'),
+            'secret': os.getenv('GOOGLE_CLIENT_SECRET'),
             'key': ''
         },
         'SCOPE': [
