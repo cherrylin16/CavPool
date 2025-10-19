@@ -214,3 +214,7 @@ if IS_HEROKU_APP:
     SOCIALACCOUNT_STORE_TOKENS = False
     # Fix OAuth state issues
     SOCIALACCOUNT_LOGIN_ON_GET = True
+    # Force session regeneration on login
+    SESSION_SAVE_EVERY_REQUEST = True
+    # Clear sessions more aggressively
+    SESSION_COOKIE_AGE = 3600  # 1 hour
