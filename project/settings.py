@@ -12,19 +12,22 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 import os
+from dotenv import load_dotenv
 import secrets
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Load .env file
+load_dotenv()
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get(
+SECRET_KEY = os.getenv(
     "DJANGO_SECRET_KEY",
-    default=secrets.token_urlsafe(nbytes=64),
 )
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -32,12 +35,12 @@ DEBUG = True
 
 IS_HEROKU_APP = "DYNO" in os.environ and "CI" not in os.environ
 
-if IS_HEROKU_APP:   
-    ALLOWED_HOSTS = ["*"]
-
+if IS_HEROKU_APP:
+    ALLOWED_HOSTS = ["django-a01-0dabbeee12a4.herokuapp.com"]
     SECURE_SSL_REDIRECT = True
 else:
-    ALLOWED_HOSTS = ["https://django-a01-0dabbeee12a4.herokuapp.com/", ".localhost", "127.0.0.1", "[::1]", "0.0.0.0", "[::]"]
+    ALLOWED_HOSTS = [".localhost", "127.0.0.1", "[::1]"]
+
 
 
 # Application definition
@@ -50,7 +53,33 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # Dashboard app
+    'dashboard',
+    'rider_profile',
+    'driver_profile',
+    'accounts',
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
 ]
+
+SITE_ID = 1
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',  # default
+    'allauth.account.auth_backends.AuthenticationBackend',  # for allauth
+]
+
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+ACCOUNT_LOGIN_METHODS = {'username', 'email'}
+ACCOUNT_SIGNUP_FIELDS = {'email*', 'username*', 'password1*', 'password2*'}
+ACCOUNT_LOGOUT_ON_GET = True
+ACCOUNT_SESSION_REMEMBER = None
+SOCIALACCOUNT_AUTO_SIGNUP = True
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -61,14 +90,15 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'allauth.account.middleware.AccountMiddleware'
 ]
 
-ROOT_URLCONF = 'ridesharing.urls'
+ROOT_URLCONF = 'project.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['dashboard/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -90,13 +120,14 @@ import dj_database_url
 
 if IS_HEROKU_APP:
     DATABASES = {
-            "default": dj_database_url.config(
-                env="DATABASE_URL",
-                conn_max_age=600,
-                conn_health_checks=True,
-                ssl_require=True,
-            ),
-        }
+        "default": dj_database_url.config(
+            env="DATABASE_URL",
+            conn_max_age=600,
+            conn_health_checks=True,
+            ssl_require=True,
+            default="sqlite:///db.sqlite3"
+        ),
+    }
 else:
     DATABASES = {
         "default": {
@@ -148,9 +179,84 @@ STORAGES = {
     },
 }
 
-WHITENOIES_KEEP_ONLY_HASHED_FILES = True
+WHITENOISE_KEEP_ONLY_HASHED_FILES = True
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# Custom User Model
+AUTH_USER_MODEL = 'accounts.User'
+# Google OAuth Configuration
+if IS_HEROKU_APP:
+    # Use database Social Application on Heroku
+    SOCIALACCOUNT_PROVIDERS = {
+        'google': {
+            'SCOPE': [
+                'profile',
+                'email',
+            ],
+            'AUTH_PARAMS': {
+                'access_type': 'online',
+            }
+        }
+    }
+else:
+    # Use settings configuration for local development
+    SOCIALACCOUNT_PROVIDERS = {
+        'google': {
+            'APP': {
+                'client_id': os.getenv('GOOGLE_CLIENT_ID'),
+                'secret': os.getenv('GOOGLE_CLIENT_SECRET'),
+                'key': ''
+            },
+            'SCOPE': [
+                'profile',
+                'email',
+            ],
+            'AUTH_PARAMS': {
+                'access_type': 'online',
+            }
+        }
+    }
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {"console": {"class": "logging.StreamHandler"}},
+    "loggers": {
+        "allauth": {
+            "handlers": ["console"],
+            "level": "DEBUG",
+            "propagate": True,
+        },
+    },
+}
+
+# Heroku-specific settings
+if IS_HEROKU_APP:
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    CSRF_TRUSTED_ORIGINS = ["https://django-a01-0dabbeee12a4.herokuapp.com"]
+    
+    SESSION_ENGINE = "django.contrib.sessions.backends.db"
+    SESSION_COOKIE_SECURE = True
+    SESSION_COOKIE_HTTPONLY = True
+    SESSION_COOKIE_SAMESITE = "None"
+
+    CSRF_COOKIE_SECURE = True
+    CSRF_COOKIE_SAMESITE = "None"
+
+    SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+    SESSION_SAVE_EVERY_REQUEST = False
+    SOCIALACCOUNT_LOGIN_ON_GET = True
+    SOCIALACCOUNT_STORE_TOKENS = False
+    SESSION_COOKIE_AGE = 3600
+
+    USE_X_FORWARDED_HOST = True
+
+
