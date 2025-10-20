@@ -74,7 +74,7 @@ AUTHENTICATION_BACKENDS = [
     'allauth.account.auth_backends.AuthenticationBackend',  # for allauth
 ]
 
-LOGIN_REDIRECT_URL = '/dashboard/'
+LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 ACCOUNT_LOGIN_METHODS = {'username', 'email'}
 ACCOUNT_SIGNUP_FIELDS = {'email*', 'username*', 'password1*', 'password2*'}
@@ -187,16 +187,7 @@ WHITENOISE_KEEP_ONLY_HASHED_FILES = True
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
-CSRF_TRUSTED_ORIGINS = [
-    "https://django-a01-0dabbeee12a4.herokuapp.com",
-    "http://127.0.0.1",
-    "http://localhost",
-]
-
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
@@ -250,6 +241,9 @@ LOGGING = {
 
 # Heroku-specific settings
 if IS_HEROKU_APP:
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    CSRF_TRUSTED_ORIGINS = ["https://django-a01-0dabbeee12a4.herokuapp.com"]
+    
     SESSION_ENGINE = "django.contrib.sessions.backends.db"
     SESSION_COOKIE_SECURE = True
     SESSION_COOKIE_HTTPONLY = True
@@ -258,19 +252,10 @@ if IS_HEROKU_APP:
     CSRF_COOKIE_SECURE = True
     CSRF_COOKIE_SAMESITE = "None"
 
-    SESSION_EXPIRE_AT_BROWSER_CLOSE = False  # required for stable OAuth
-    SESSION_SAVE_EVERY_REQUEST = False       
+    SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+    SESSION_SAVE_EVERY_REQUEST = False
     SOCIALACCOUNT_LOGIN_ON_GET = True
     SOCIALACCOUNT_STORE_TOKENS = False
-    # Fix OAuth state issues
-    SOCIALACCOUNT_LOGIN_ON_GET = True
-    # Force session regeneration on login
-    SESSION_SAVE_EVERY_REQUEST = True
-    # Clear sessions more aggressively
-    SESSION_COOKIE_AGE = 3600  # 1 hour
+    SESSION_COOKIE_AGE = 3600
 
-# For django admin
-SECURE_SSL_REDIRECT = True
-CSRF_TRUSTED_ORIGINS = [
-    "https://django-a01-0dabbeee12a4.herokuapp.com",
-]
+
