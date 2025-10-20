@@ -28,7 +28,6 @@ load_dotenv()
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv(
     "DJANGO_SECRET_KEY",
-    default=secrets.token_urlsafe(nbytes=64),
 )
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -247,15 +246,17 @@ if IS_HEROKU_APP:
     SESSION_ENGINE = "django.contrib.sessions.backends.db"
     SESSION_COOKIE_SECURE = True
     SESSION_COOKIE_HTTPONLY = True
-    SESSION_COOKIE_SAMESITE = "None"
+    SESSION_COOKIE_SAMESITE = "Lax"
 
     CSRF_COOKIE_SECURE = True
-    CSRF_COOKIE_SAMESITE = "None"
+    CSRF_COOKIE_SAMESITE = "Lax"
 
     SESSION_EXPIRE_AT_BROWSER_CLOSE = False
     SESSION_SAVE_EVERY_REQUEST = False
     SOCIALACCOUNT_LOGIN_ON_GET = True
     SOCIALACCOUNT_STORE_TOKENS = False
     SESSION_COOKIE_AGE = 3600
+    
+    USE_X_FORWARDED_HOST = True
 
 

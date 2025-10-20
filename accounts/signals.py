@@ -40,8 +40,8 @@ def set_user_type_on_social_add(sender, request, sociallogin, **kwargs):
         user.save()
 
 
-@receiver(user_logged_in)
-def clear_messages_on_login(sender, request, user, **kwargs):
-    # Clear messages on every login to prevent cross-contamination
-    if hasattr(request, '_messages'):
-        request._messages.used = True
+# @receiver(user_logged_in)
+# def clear_messages_on_login(sender, request, user, **kwargs):
+#     # Clear messages on every login to prevent cross-contamination
+#     if hasattr(request, '_messages'):
+#         request._messages.used = True
