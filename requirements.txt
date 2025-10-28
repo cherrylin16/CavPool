@@ -26,3 +26,4 @@ cryptography
 whitenoise
 django-storages
 Pillow
+boto3
