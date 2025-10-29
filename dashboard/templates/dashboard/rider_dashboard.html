@@ -19,12 +19,20 @@
     <div class="wrapper">
         <div class="main">
         <h1 class="text-center">Welcome, User!</h1>
-        <p class="text-center">More information coming soon!</p>
+        <p class="text-center">Where to?</p>
+
+        <div class="searchbar">
+                <form>
+                    <input type="text" placeholder="Search the name of a trip, driver, location, or keyword">
+                </form>
         </div>
+        </div>
+
         <button class="side-panel-toggle" type="button">
             <span class="material-symbols-outlined sp-icon-open" style="font-size:48px;">menu</span>
             <span class="material-symbols-outlined sp-icon-close" style="font-size:48px;">menu</span>
         </button>
+
         <div class="side-panel">
             <div class="d-grid gap-2">
                 <a href="{% url 'rider_profile' %}" role="button"  class="btn btn-primary btn-lg btn-block" style="margin-top: 5px;">Rider Profile</a>

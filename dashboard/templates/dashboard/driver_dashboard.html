@@ -2,6 +2,7 @@
 <!-- https://www.youtube.com/watch?v=FeAhHPaGyVA-->
 <!-- https://developers.google.com/fonts/docs/material_icons#setup_method_1_using_via_google_fonts-->
 <!-- https://fonts.google.com/icons?selected=Material+Symbols+Outlined:menu:FILL@0;wght@400;GRAD@0;opsz@24&icon.size=24&icon.color=%23e3e3e3-->
+<!-- https://www.w3schools.com/howto/howto_css_searchbar.asp-->
 
 {% load static %}
 
@@ -24,12 +25,18 @@
 
 
 <body>
-
     <div class="wrapper">
         <div class="main">
             <h1 class="text-center">Welcome, User!</h1>
-            <p class="text-center">More information coming soon!</p>
+            <p class="text-center">Where to?</p>
+
+             <div class="searchbar">
+                <form>
+                    <input type="text" placeholder="Search the name of a trip, driver, location, or keyword">
+                </form>
         </div>
+        </div>
+
 
         <button class="side-panel-toggle" type="button">
         <span class="material-symbols-outlined sp-icon-open" style="font-size:48px;">menu open</span>

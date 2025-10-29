@@ -16,7 +16,7 @@ body {
 
 .main{
     flex-grow: 1;
-    padding: 50px;
+    padding: 40px;
     overflow-y: auto;
 }
 
@@ -65,3 +65,22 @@ body {
     display: initial !important;
 }
 
+/* https://www.w3schools.com/howto/howto_css_searchbar.asp */
+/* Search bar */
+.searchbar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.searchbar input[type=text] {
+    flex-grow:1;
+    float: right;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 6px 6px 6px 6px;
+    margin-top: 8px;
+    font-size: 17px;
+    width: 1000px;
+}
