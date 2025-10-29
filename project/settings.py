@@ -19,7 +19,7 @@ import secrets
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Load .env file
-load_dotenv()
+load_dotenv(BASE_DIR / 'keys.env')
 
 
 # Quick-start development settings - unsuitable for production
@@ -173,6 +173,7 @@ USE_TZ = True
 
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATIC_URL = 'static/'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # AWS S3 Configuration
 AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
@@ -227,6 +228,7 @@ if IS_HEROKU_APP:
     }
 else:
     # Use settings configuration for local development
+
     SOCIALACCOUNT_PROVIDERS = {
         'google': {
             'APP': {
@@ -278,4 +280,6 @@ if IS_HEROKU_APP:
 
     USE_X_FORWARDED_HOST = True
 
+# Static files
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
