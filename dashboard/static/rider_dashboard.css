@@ -69,9 +69,8 @@ body {
 /* Search bar */
 .searchbar {
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
-    width: 100%;
 }
 
 .searchbar input[type=text] {
@@ -82,5 +81,32 @@ body {
     border-radius: 6px 6px 6px 6px;
     margin-top: 8px;
     font-size: 17px;
-    width: 1000px;
+    width: 1200px;
+    margin-right: 6px;
+}
+
+/* Search button */
+.search-button {
+    width: 45px;
+    height: 40px;
+    flex-shrink: 0;
+    place-items: center;
+    justify-content: center;
+    margin-top: 6px;
+    padding-top: 5px;
+
+    color: #ffffff;
+    background: #37518C;
+    border: none;
+    border-radius: 6px 6px 6px 6px;
+    outline: none;
+    cursor: pointer;
+}
+
+.search-button:hover{
+    background: #2E4376;
+}
+
+.search-container {
+    display: flex;
 }

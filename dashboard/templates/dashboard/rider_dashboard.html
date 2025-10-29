@@ -12,7 +12,7 @@
     crossorigin="anonymous">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link rel="stylesheet" href="{% static 'rider_dashboard.css' %}">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=menu" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=menu,search" />
 </head>
 
 <body>
@@ -21,10 +21,13 @@
         <h1 class="text-center">Welcome, User!</h1>
         <p class="text-center">Where to?</p>
 
-        <div class="searchbar">
-                <form>
+        <div class="search-container">
+                <form class="searchbar">
                     <input type="text" placeholder="Search the name of a trip, driver, location, or keyword">
                 </form>
+                <button type="submit" class="search-button" type="button">
+                    <span class="material-symbols-outlined" style="font-size:27px;">search</span>            
+                </button>
         </div>
         </div>
 
@@ -36,9 +39,9 @@
         <div class="side-panel">
             <div class="d-grid gap-2">
                 <a href="{% url 'rider_profile' %}" role="button"  class="btn btn-primary btn-lg btn-block" style="margin-top: 5px;">Rider Profile</a>
-                <a href="{% url 'account_logout' %}" class="btn btn-primary btn-block btn-lg py-2" style="margin-top: 3px" >Messaging</a>
-                <a href="{% url 'account_logout' %}" class="btn btn-primary btn-block btn-lg py-2" style="margin-top: 3px" >History</a>
-                <a href="{% url 'account_logout' %}" class="btn btn-primary btn-block btn-lg py-2" style="margin-top: 3px" >Log Out</a>
+                <a href="{% url 'account_logout' %}" class="btn btn-primary btn-block btn-lg py-2" style="margin-top: 5px" >Messaging</a>
+                <a href="{% url 'account_logout' %}" class="btn btn-primary btn-block btn-lg py-2" style="margin-top: 5px" >History</a>
+                <a href="{% url 'account_logout' %}" class="btn btn-primary btn-block btn-lg py-2" style="margin-top: 5px" >Log Out</a>
             </div>
         </div>
     </div>
