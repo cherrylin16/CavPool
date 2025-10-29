@@ -56,3 +56,11 @@ body {
 .side-panel-open .side-panel {
     display: initial;
 }
+
+.side-panel-open .sp-icon-open{
+    display: none !important;
+}
+
+.side-panel-open .sp-icon-close{
+    display: initial !important;
+}

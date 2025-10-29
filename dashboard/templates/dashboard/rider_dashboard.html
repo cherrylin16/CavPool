@@ -16,14 +16,14 @@
 </head>
 
 <body>
-    <div class="wrapper side-panel-open">
+    <div class="wrapper">
         <div class="main">
         <h1 class="text-center">Welcome, User!</h1>
         <p class="text-center">More information coming soon!</p>
         </div>
         <button class="side-panel-toggle" type="button">
-            <span class="material-symbols-outlined" sp-icon-open style="font-size:48px;">menu</span>
-            <span class="material-symbols-outlined sp-icon-close"  sp-icon-open style="font-size:48px;">menu</span>
+            <span class="material-symbols-outlined sp-icon-open" style="font-size:48px;">menu</span>
+            <span class="material-symbols-outlined sp-icon-close" style="font-size:48px;">menu</span>
         </button>
         <div class="side-panel">
             <div class="d-grid gap-2">
@@ -37,7 +37,7 @@
 
     <script>
         document.querySelector(".side-panel-toggle").addEventListener("click", () => {
-            document.querySelector(".wrapper").classList.toggle("side-panel-open");
+            document.querySelector(".wrapper").classList.toggle("side-panel-open"); // When the side panel is open
         });
     </script>
 </body>
