@@ -39,10 +39,24 @@
                     <span class="material-symbols-outlined" style="font-size:27px;">search</span>            
                 </button>
 
-
                 <button class="create-trip btn btn-primary btn-block" type="button">Create New Trip</button>
-         
             </div>
+
+            <div class="listings-container">
+                    <p>Active Trip Listings</p>
+            </div>
+
+            <div class="listings-filters-container">
+                <div class="empty-listings-box">
+                </div>
+
+                <div class="filters-box">
+                    <p> Filters </p>
+                </div>
+
+            </div>
+
+
         </div>
 
 
@@ -54,8 +68,8 @@
         <div class="side-panel">
             <div class="d-grid gap-2">
                 <a href="{% url 'driver_profile' %}" role="button"  class="btn btn-primary btn-lg btn-block" style="margin-top: 5px;">Driver Profile</a>
-                <a href="{% url 'account_logout' %}" class="btn btn-primary btn-block btn-lg py-2" style="margin-top: 5px" >Messaging</a>
-                <a href="{% url 'account_logout' %}" class="btn btn-primary btn-block btn-lg py-2" style="margin-top: 5px" >History</a>
+                <a href="" class="btn btn-primary btn-block btn-lg py-2" style="margin-top: 5px" >Messaging</a>
+                <a href="" class="btn btn-primary btn-block btn-lg py-2" style="margin-top: 5px" >History</a>
                 <a href="{% url 'account_logout' %}" class="btn btn-primary btn-block btn-lg py-2" style="margin-top: 5px" >Log Out</a>
             </div>
         </div>
