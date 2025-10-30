@@ -55,10 +55,10 @@
                                     <h6 class="card-subtitle mb-2 text-muted">{{ post.author.driverprofile.name|default:post.author.username }} - {{ post.created_at|date:"M d, Y" }}</h6>
                                     <p class="card-text">{{ post.text }}</p>
                                     {% if post.image %}
-                                        {% if post.image_visibility == 'all' or user.user_type == 'driver' and post.image_visibility == 'drivers' %}
+                                        {% if post.image_visibility == 'all' or post.image_visibility == 'drivers' %}
                                             <img src="{{ post.image.url }}" class="img-fluid" style="max-height: 200px; width: 100%; object-fit: cover;">
                                         {% else %}
-                                            <p class="text-muted"><em>Image visible to {{ post.image_visibility }} only</em></p>
+                                            <p class="text-muted"><em>Image visible to {{ post.get_image_visibility_display }}</em></p>
                                         {% endif %}
                                     {% endif %}
                                 </div>
