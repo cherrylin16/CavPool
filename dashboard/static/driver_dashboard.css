@@ -27,13 +27,13 @@ body {
     height: 100%;
     padding: 40px;
     overflow-y: scroll;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
+    /* scrollbar-width: none;
+    -ms-overflow-style: none; */
 }
 
-.main::-webkit-scrollbar {
-  display: none; /* Chrome, Safari */
-}
+/* .main::-webkit-scrollbar {
+  display: none;
+} */
 
 .side-panel-toggle {
     width: 57px;
@@ -142,7 +142,7 @@ body {
 }
 
 .create-trip {
-    font-size:18px;
+    font-size:16px;
     height: 42px;
     width: 600px;
 }
