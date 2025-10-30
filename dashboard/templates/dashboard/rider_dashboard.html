@@ -35,7 +35,28 @@
         </div>
 
         <div class="listings-filters-container">
-                <div class="empty-listings-box">
+                <div class="listings-box row">
+                    {% for post in posts %}
+                        <div class="col-md-6 col-lg-4 mb-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h6 class="card-subtitle mb-2 text-muted">{{ post.author.driverprofile.name|default:post.author.riderprofile.name|default:post.author.username }} - {{ post.created_at|date:"M d, Y" }}</h6>
+                                    <p class="card-text">{{ post.text }}</p>
+                                    {% if post.image %}
+                                        {% if post.image_visibility == 'all' or user.user_type == 'rider' and post.image_visibility == 'riders' %}
+                                            <img src="{{ post.image.url }}" class="img-fluid" style="max-height: 200px; width: 100%; object-fit: cover;">
+                                        {% else %}
+                                            <p class="text-muted"><em>Image visible to {{ post.image_visibility }} only</em></p>
+                                        {% endif %}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <div class="col-12">
+                            <p class="text-muted">No carpool posts yet.</p>
+                        </div>
+                    {% endfor %}
                 </div>
 
                 <div class="filters-box">
