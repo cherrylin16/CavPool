@@ -3,13 +3,13 @@ https://django-a01-0dabbeee12a4.herokuapp.com/<br>
 Heroku App Name: django-a01
 
 ## Heroku CLI Commands
-heroku
-heroku login
+heroku  <br>
+heroku login  <br>
 
 ## Database Migrations
-python manage.py makemigrations
-python manage.py migrate
-heroku run python manage.py migrate -a django-a01
+python manage.py makemigrations  <br>
+python manage.py migrate <br> 
+heroku run python manage.py migrate -a django-a01 <br>
 
 ## Team Roles
 Scrum Lead: Manav Bharath  
