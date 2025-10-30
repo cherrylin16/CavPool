@@ -34,12 +34,6 @@
     <a href="{% url 'rider dashboard' %}" class="btn btn-primary btn-block w-8 py-2 dashboard-btn">Dashboard</a>
     <h1>Rider Profile</h1>
     
-    {% if messages %}
-        {% for message in messages %}
-            <p style="color: green; font-weight: bold;">{{ message }}</p>
-        {% endfor %}
-    {% endif %}
-    
     <div class="profile-info" id="profileInfo">
         {% if profile.profile_picture %}
             <img src="{{ profile.profile_picture.url }}" alt="Profile Picture" class="profile-pic">
