@@ -19,10 +19,6 @@ def message_detail(request, user_id):
 
 @login_required
 def new_message(request):
-    return redirect("message_list")
-
-@login_required
-def new_message(request):
     if request.method == "POST":
         username = request.POST.get("username")
         message_text = request.POST.get("message")
