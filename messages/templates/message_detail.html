@@ -1,0 +1,101 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+    crossorigin="anonymous">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'rider_dashboard.css' %}">
+  <link rel="stylesheet" href="{% static 'messages/message_detail.css' %}">
+  <title>DM with {{ other_user.username }}</title>
+</head>
+
+<body>
+  <div class="wrapper">
+    <div class="main">
+      <div class="chat-container">
+        <div class="chat-header">
+          Chat with {{ other_user.username }}
+        </div>
+        <div id="chat-log" class="chat-messages"></div>
+        <div class="chat-input">
+          <input id="chat-message-input" type="text" placeholder="Type a message...">
+          <button id="chat-message-submit">Send</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SIDE PANEL -->
+    <button class="side-panel-toggle" type="button">
+      <span class="material-symbols-outlined sp-icon-open" style="font-size:48px;">menu</span>
+      <span class="material-symbols-outlined sp-icon-close" style="font-size:48px;">menu</span>
+    </button>
+
+    <div class="side-panel">
+      <div class="d-grid gap-2">
+        {% if request.user.is_driver %}
+          <a href="{% url 'driver_profile' %}" class="btn btn-primary btn-lg btn-block" style="margin-top: 5px;">Driver Profile</a>
+        {% else %}
+          <a href="{% url 'rider_profile' %}" class="btn btn-primary btn-lg btn-block" style="margin-top: 5px;">Rider Profile</a>
+        {% endif %}
+        <a href="{% url 'message_page' %}" class="btn btn-primary btn-block btn-lg py-2" style="margin-top: 5px;">Messaging</a>
+        <a href="#" class="btn btn-primary btn-block btn-lg py-2" style="margin-top: 5px;">History</a>
+        <a href="{% url 'account_logout' %}" class="btn btn-primary btn-block btn-lg py-2" style="margin-top: 5px;">Log Out</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.querySelector(".side-panel-toggle").addEventListener("click", () => {
+      document.querySelector(".wrapper").classList.toggle("side-panel-open");
+    });
+
+    const roomName = "{{ other_user.username }}";
+    const chatSocket = new WebSocket(
+      `ws://${window.location.host}/ws/chat/${roomName}/`
+    );
+
+    chatSocket.onmessage = function(e) {
+      const data = JSON.parse(e.data);
+      const chatLog = document.querySelector('#chat-log');
+      const messageElement = document.createElement('div');
+      messageElement.classList.add('message');
+
+      if (data.sender === "{{ request.user.username }}") {
+        messageElement.classList.add('sent');
+      } else {
+        messageElement.classList.add('received');
+      }
+
+      messageElement.textContent = data.message;
+      chatLog.appendChild(messageElement);
+      chatLog.scrollTop = chatLog.scrollHeight;
+    };
+
+    chatSocket.onclose = function(e) {
+      console.error('Chat socket closed unexpectedly');
+    };
+
+    document.querySelector('#chat-message-submit').onclick = function(e) {
+      const input = document.querySelector('#chat-message-input');
+      const message = input.value.trim();
+      if (message) {
+        chatSocket.send(JSON.stringify({'message': message}));
+        input.value = '';
+      }
+    };
+
+    document.querySelector('#chat-message-input').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        document.querySelector('#chat-message-submit').click();
+      }
+    });
+  </script>
+</body>
+</html>
