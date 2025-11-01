@@ -24,4 +24,5 @@ urlpatterns = [
     path("", include("dashboard.urls")),
     path("", include("driver_profile.urls")),
     path("", include("rider_profile.urls")),
+    path("messages/", include("messages.urls")),
 ]
