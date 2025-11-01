@@ -12,7 +12,7 @@ def message_list(request):
 
 
 @login_required
-def chat_room(request, user_id):
+def message_detail(request, user_id):
     other_user = get_object_or_404(User, id=user_id)
     return render(request, "messaging/message_detail.html", {"other_user": other_user})
 
