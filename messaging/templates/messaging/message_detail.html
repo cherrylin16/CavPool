@@ -23,7 +23,13 @@
         <div class="chat-header">
           DM with {{ other_user.username }}
         </div>
-        <div id="chat-log" class="chat-messages"></div>
+        <div id="chat-log" class="chat-messages">
+          {% for msg in messages %}
+            <div class="message {% if msg.sender == request.user %}sent{% else %}received{% endif %}">
+              {{ msg.content }}
+            </div>
+          {% endfor %}
+        </div>
         <div class="chat-input">
           <input id="chat-message-input" type="text" placeholder="Type a message...">
           <button id="chat-message-submit">Send</button>
