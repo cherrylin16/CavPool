@@ -18,4 +18,4 @@ def chat_room(request, user_id):
 
 @login_required
 def new_message(request):
-    return redirect("message_page")
+    return redirect("message_list")
