@@ -2,6 +2,7 @@ from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
+from .models import Message
 
 User = get_user_model()
 
@@ -14,7 +15,16 @@ def message_list(request):
 @login_required
 def message_detail(request, user_id):
     other_user = get_object_or_404(User, id=user_id)
-    return render(request, "messaging/message_detail.html", {"other_user": other_user})
+
+    messages_qs = Message.objects.filter(
+        sender__in=[request.user, other_user],
+        receiver__in=[request.user, other_user]
+    ).order_by('timestamp')
+
+    return render(request, "messaging/message_detail.html", {
+        "other_user": other_user,
+        "messages": messages_qs
+    })
 
 
 @login_required
