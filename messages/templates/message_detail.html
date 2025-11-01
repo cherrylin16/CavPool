@@ -56,9 +56,9 @@
       document.querySelector(".wrapper").classList.toggle("side-panel-open");
     });
 
-    const roomName = "{{ other_user.username }}";
+    const otherUserId = "{{ other_user.id }}";
     const chatSocket = new WebSocket(
-      `ws://${window.location.host}/ws/chat/${roomName}/`
+        `ws://${window.location.host}/ws/chat/${otherUserId}/`
     );
 
     chatSocket.onmessage = function(e) {
