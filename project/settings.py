@@ -60,12 +60,25 @@ INSTALLED_APPS = [
     'dashboard',
     'rider_profile',
     'driver_profile',
+    'messages'
+    'channels'
     'django.contrib.sites',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
 ]
+
+ASGI_APPLICATION = 'project.asgi.application'
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            'hosts': [("127.0.0.1", 6379)], #TODO: replace "127.0.0.1 with redis url provided by heroku redis add-on."
+        },
+    },
+}
 
 SITE_ID = 1
 
