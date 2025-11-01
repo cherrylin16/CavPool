@@ -60,8 +60,8 @@ INSTALLED_APPS = [
     'dashboard',
     'rider_profile',
     'driver_profile',
-    'messages'
-    'channels'
+    'messaging',
+    'channels',
     'django.contrib.sites',
     'allauth',
     'allauth.account',
@@ -186,7 +186,7 @@ USE_TZ = True
 
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATIC_URL = 'static/'
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage' # Allowing heroku to find static files
+#STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage' # Allowing heroku to find static files
 
 # AWS S3 Configuration
 AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
@@ -210,7 +210,7 @@ STORAGES = {
 
 # Media files
 MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/'
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+#DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
 WHITENOISE_KEEP_ONLY_HASHED_FILES = True
 
