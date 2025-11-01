@@ -1,4 +1,5 @@
-from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib import messages
+from django.shortcuts import render, redirect, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 
@@ -19,3 +20,20 @@ def chat_room(request, user_id):
 @login_required
 def new_message(request):
     return redirect("message_list")
+
+@login_required
+def new_message(request):
+    if request.method == "POST":
+        username = request.POST.get("username")
+        message_text = request.POST.get("message")
+
+        try:
+            recipient = User.objects.get(username=username)
+        except User.DoesNotExist:
+            messages.error(request, "User not found.")
+            return redirect("new_message")
+
+        return redirect("message_detail", username=recipient.username)
+
+    users = User.objects.exclude(id=request.user.id)
+    return render(request, "messaging/new_message.html", {"users": users})
