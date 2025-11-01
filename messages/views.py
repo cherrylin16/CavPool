@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 @login_required
-def messages_list(request):
+def message_list(request):
     users = User.objects.exclude(id=request.user.id)
     return render(request, "messages/message_list.html", {"users": users})
 
