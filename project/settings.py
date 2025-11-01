@@ -47,6 +47,7 @@ else:
 # Application definition
 
 INSTALLED_APPS = [
+    'channels', #Must come first please and thank you :)
     'whitenoise.runserver_nostatic',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -59,9 +60,8 @@ INSTALLED_APPS = [
     'accounts',  # Must be before allauth
     'dashboard',
     'rider_profile',
-    'driver_profile',
-    'messaging',
-    'channels',
+    'driver_profile.apps.DriverProfileConfig',
+    'messaging.apps.MessagingConfig',
     'django.contrib.sites',
     'allauth',
     'allauth.account',

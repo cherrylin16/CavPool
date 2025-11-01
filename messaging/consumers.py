@@ -4,11 +4,10 @@ from channels.db import database_sync_to_async
 from django.contrib.auth import get_user_model
 from .models import Message
 
-User = get_user_model()
-
 
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
+        print(">>> CONNECTING TO CHAT CONSUMER <<<")
         self.other_user_id = int(self.scope["url_route"]["kwargs"]["user_id"])
         me = self.scope["user"]
         self.room_name = f"chat_{min(me.id, self.other_user_id)}_{max(me.id, self.other_user_id)}"
@@ -49,4 +48,5 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     @database_sync_to_async
     def get_user(self, user_id):
+        User = get_user_model()
         return User.objects.get(id=user_id)
