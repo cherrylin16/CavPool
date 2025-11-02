@@ -85,6 +85,7 @@ ACCOUNT_EMAIL_VERIFICATION = "none"
 ACCOUNT_AUTHENTICATION_METHOD = "email"
 ACCOUNT_EMAIL_REQUIRED = True
 SOCIALACCOUNT_QUERY_EMAIL = True
+SOCIALACCOUNT_LOGIN_ON_GET = True
 MODERATOR_EMAILS = [
     'ride.sharing.test.moderator@gmail.com',  # Test account
     # Add your test Google account email here
@@ -94,7 +95,10 @@ SOCIALACCOUNT_ADAPTER = "accounts.adapters.MySocialAccountAdapter"
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
         'SCOPE': ['profile', 'email'],
-        'AUTH_PARAMS': {'access_type': 'online'},
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+            'prompt': 'select_account'
+        },
     }
 }
 
@@ -239,6 +243,7 @@ if IS_HEROKU_APP:
             ],
             'AUTH_PARAMS': {
                 'access_type': 'online',
+                'prompt': 'select_account'
             }
         }
     }
@@ -258,6 +263,7 @@ else:
             ],
             'AUTH_PARAMS': {
                 'access_type': 'online',
+                'prompt': 'select_account'
             }
         }
     }
