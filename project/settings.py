@@ -87,13 +87,33 @@ AUTHENTICATION_BACKENDS = [
     'allauth.account.auth_backends.AuthenticationBackend',  # for allauth
 ]
 
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/accounts/login-redirect/'
 LOGOUT_REDIRECT_URL = '/'
 ACCOUNT_LOGIN_METHODS = {'username', 'email'}
 ACCOUNT_SIGNUP_FIELDS = {'email*', 'username*', 'password1*', 'password2*'}
 ACCOUNT_LOGOUT_ON_GET = True
 ACCOUNT_SESSION_REMEMBER = None
 SOCIALACCOUNT_AUTO_SIGNUP = True
+ACCOUNT_EMAIL_VERIFICATION = "none"
+ACCOUNT_AUTHENTICATION_METHOD = "email"
+ACCOUNT_EMAIL_REQUIRED = True
+SOCIALACCOUNT_QUERY_EMAIL = True
+SOCIALACCOUNT_LOGIN_ON_GET = True
+MODERATOR_EMAILS = [
+    'ride.sharing.test.moderator@gmail.com',  # Test account
+    # Add your test Google account email here
+]
+SOCIALACCOUNT_ADAPTER = "accounts.adapters.MySocialAccountAdapter"
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': ['profile', 'email'],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+            'prompt': 'select_account'
+        },
+    }
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -236,6 +256,7 @@ if IS_HEROKU_APP:
             ],
             'AUTH_PARAMS': {
                 'access_type': 'online',
+                'prompt': 'select_account'
             }
         }
     }
@@ -255,6 +276,7 @@ else:
             ],
             'AUTH_PARAMS': {
                 'access_type': 'online',
+                'prompt': 'select_account'
             }
         }
     }
@@ -292,6 +314,11 @@ if IS_HEROKU_APP:
     SESSION_COOKIE_AGE = 3600
 
     USE_X_FORWARDED_HOST = True
+else:
+    # Local development settings
+    CSRF_TRUSTED_ORIGINS = ["http://127.0.0.1:8000", "http://localhost:8000"]
+    SESSION_COOKIE_SECURE = False
+    CSRF_COOKIE_SECURE = False
 
 # Static files
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
