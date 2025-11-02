@@ -16,6 +16,16 @@ def message_list(request):
 def message_detail(request, user_id):
     other_user = get_object_or_404(User, id=user_id)
 
+    if request.method == "POST":
+        message_text = request.POST.get("message")
+        if message_text:
+            Message.objects.create(
+                sender=request.user,
+                receiver=other_user,
+                content=message_text
+            )
+        return redirect("message_detail", user_id=user_id)
+
     messages_qs = Message.objects.filter(
         sender__in=[request.user, other_user],
         receiver__in=[request.user, other_user]
@@ -39,7 +49,14 @@ def new_message(request):
             messages.error(request, "User not found.")
             return redirect("new_message")
 
-        return redirect("message_detail", username=recipient.username)
+        # Create the message
+        Message.objects.create(
+            sender=request.user,
+            receiver=recipient,
+            content=message_text
+        )
+
+        return redirect("message_detail", user_id=recipient.id)
 
     users = User.objects.exclude(id=request.user.id)
     return render(request, "messaging/new_message.html", {"users": users})

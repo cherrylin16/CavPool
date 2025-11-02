@@ -31,24 +31,28 @@
           {% endfor %}
         </div>
         <div class="chat-input">
-          <input id="chat-message-input" type="text" placeholder="Type a message...">
-          <button id="chat-message-submit">Send</button>
+          <form method="POST" style="display: flex; width: 100%;">
+            {% csrf_token %}
+            <input id="chat-message-input" name="message" type="text" placeholder="Type a message..." style="flex: 1;">
+            <button id="chat-message-submit" type="button">Send</button>
+            <button type="submit" style="display: none;" id="fallback-submit">Send</button>
+          </form>
         </div>
       </div>
     </div>
 
     <!-- SIDE PANEL -->
     <button class="side-panel-toggle" type="button">
-      <span class="material-symbols-outlined sp-icon-open" style="font-size:48px;">menu</span>
-      <span class="material-symbols-outlined sp-icon-close" style="font-size:48px;">menu</span>
+      <span class="material-icons sp-icon-open" style="font-size:48px;">menu</span>
+      <span class="material-icons sp-icon-close" style="font-size:48px;">close</span>
     </button>
 
     <div class="side-panel">
       <div class="d-grid gap-2">
-        {% if request.user.is_driver %}
-          <a href="{% url 'driver_profile' %}" class="btn btn-primary btn-lg btn-block" style="margin-top: 5px;">Driver Profile</a>
+        {% if request.user.user_type == 'driver' %}
+          <a href="/driver/" class="btn btn-primary btn-lg btn-block" style="margin-top: 5px;">Driver Dashboard</a>
         {% else %}
-          <a href="{% url 'rider_profile' %}" class="btn btn-primary btn-lg btn-block" style="margin-top: 5px;">Rider Profile</a>
+          <a href="/rider/" class="btn btn-primary btn-lg btn-block" style="margin-top: 5px;">Rider Dashboard</a>
         {% endif %}
         <a href="{% url 'message_list' %}" class="btn btn-primary btn-block btn-lg py-2" style="margin-top: 5px;">Messaging</a>
         <a href="#" class="btn btn-primary btn-block btn-lg py-2" style="margin-top: 5px;">History</a>
@@ -84,16 +88,29 @@
       chatLog.scrollTop = chatLog.scrollHeight;
     };
 
+    let websocketConnected = true;
+    
     chatSocket.onclose = function(e) {
       console.error('Chat socket closed unexpectedly');
+      websocketConnected = false;
+    };
+
+    chatSocket.onerror = function(e) {
+      console.error('WebSocket error');
+      websocketConnected = false;
     };
 
     document.querySelector('#chat-message-submit').onclick = function(e) {
       const input = document.querySelector('#chat-message-input');
       const message = input.value.trim();
       if (message) {
-        chatSocket.send(JSON.stringify({'message': message}));
-        input.value = '';
+        if (websocketConnected && chatSocket.readyState === WebSocket.OPEN) {
+          chatSocket.send(JSON.stringify({'message': message}));
+          input.value = '';
+        } else {
+          // Fallback to form submission
+          document.querySelector('#fallback-submit').click();
+        }
       }
     };
 

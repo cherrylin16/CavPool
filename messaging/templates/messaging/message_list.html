@@ -12,7 +12,7 @@
     crossorigin="anonymous">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link rel="stylesheet" href="{% static 'rider_dashboard.css' %}">
-  <link rel="stylesheet" href="{% static 'messaging/message_list.css' %}">
+  <link rel="stylesheet" href="{% static 'message_list.css' %}">
   <title>Messages</title>
 </head>
 
@@ -45,17 +45,17 @@
     </div>
 
     <button class="side-panel-toggle" type="button">
-      <span class="material-symbols-outlined sp-icon-open" style="font-size:48px;">menu</span>
-      <span class="material-symbols-outlined sp-icon-close" style="font-size:48px;">menu</span>
+      <span class="material-icons sp-icon-open" style="font-size:48px;">menu</span>
+      <span class="material-icons sp-icon-close" style="font-size:48px;">close</span>
     </button>
 
     <div class="side-panel">
       <div class="d-grid gap-2">
         {% if request.user.is_authenticated %}
-          {% if request.user.is_driver %}
-            <a href="{% url 'driver_profile' %}" class="btn btn-primary btn-lg btn-block" style="margin-top: 5px;">Driver Profile</a>
+          {% if request.user.user_type == 'driver' %}
+            <a href="/driver/" class="btn btn-primary btn-lg btn-block" style="margin-top: 5px;">Driver Dashboard</a>
           {% else %}
-            <a href="{% url 'rider_profile' %}" class="btn btn-primary btn-lg btn-block" style="margin-top: 5px;">Rider Profile</a>
+            <a href="/rider/" class="btn btn-primary btn-lg btn-block" style="margin-top: 5px;">Rider Dashboard</a>
           {% endif %}
         {% endif %}
 
