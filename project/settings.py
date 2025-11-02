@@ -85,7 +85,6 @@ ACCOUNT_EMAIL_VERIFICATION = "none"
 ACCOUNT_AUTHENTICATION_METHOD = "email"
 ACCOUNT_EMAIL_REQUIRED = True
 SOCIALACCOUNT_QUERY_EMAIL = True
-LOGIN_REDIRECT_URL = '/accounts/login-redirect/'
 MODERATOR_EMAILS = [
     'ride.sharing.test.moderator@gmail.com',  # Test account
     # Add your test Google account email here
