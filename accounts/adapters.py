@@ -6,14 +6,14 @@ class MySocialAccountAdapter(DefaultSocialAccountAdapter):
         user = super().save_user(request, sociallogin, form)
         role = request.session.pop('role_intent', None)
         
-        # Set user_type directly on the User model
-        if role in ['driver', 'rider']:
-            user.user_type = role
-        
-        # Check if user is a moderator
+        # Check if user is a moderator first
         if user.email and user.email.lower() in [e.lower() for e in settings.MODERATOR_EMAILS]:
             user.is_moderator = True
             user.is_staff = True
+        else:
+            # Only set user_type if not a moderator
+            if role in ['driver', 'rider']:
+                user.user_type = role
         
         user.save()
         return user
