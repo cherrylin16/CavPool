@@ -1,4 +1,4 @@
-from django.contrib.auth.decorators import login_required  # Import this first
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib.auth import login
 from django.contrib import messages
@@ -15,6 +15,21 @@ def driver_login(request):
             return redirect('/driver/')
         elif request.user.user_type == 'rider':
             return redirect('/rider/')
+    
+    if request.method == 'POST':
+        from django.contrib.auth import authenticate
+        username = request.POST.get('login')
+        password = request.POST.get('password')
+        
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            user.user_type = 'driver'
+            user.save()
+            login(request, user)
+            return redirect('/driver/')
+        else:
+            messages.error(request, 'Invalid login credentials.')
+    
     return render(request, 'accounts/driver_login.html')
 
 
@@ -24,6 +39,21 @@ def rider_login(request):
             return redirect('/driver/')
         elif request.user.user_type == 'rider':
             return redirect('/rider/')
+    
+    if request.method == 'POST':
+        from django.contrib.auth import authenticate
+        username = request.POST.get('login')
+        password = request.POST.get('password')
+        
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            user.user_type = 'rider'
+            user.save()
+            login(request, user)
+            return redirect('/rider/')
+        else:
+            messages.error(request, 'Invalid login credentials.')
+    
     return render(request, 'accounts/rider_login.html')
 
 
@@ -72,7 +102,7 @@ def set_user_type(request, user_type):
 
 def start_social_login(request, role):
     if role not in ['driver', 'rider']:
-        return redirect('/')  # Invalid role, handle accordingly
+        return redirect('/')
     request.session['role_intent'] = role
     return redirect('/accounts/google/login/')
 
