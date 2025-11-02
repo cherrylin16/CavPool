@@ -78,9 +78,9 @@ def start_social_login(request, role):
 
 @login_required
 def login_redirect(request):
-    profile = request.user.profile
-    if profile.is_moderator:
+    user = request.user
+    if user.is_staff:  # Check if moderator
         return redirect('moderator_dashboard')
-    if profile.role == 'driver':
-        return redirect('driver_dashboard')
-    return redirect('rider_dashboard')
+    if user.user_type == 'driver':
+        return redirect('/driver/')
+    return redirect('/rider/')

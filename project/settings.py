@@ -297,6 +297,11 @@ if IS_HEROKU_APP:
     SESSION_COOKIE_AGE = 3600
 
     USE_X_FORWARDED_HOST = True
+else:
+    # Local development settings
+    CSRF_TRUSTED_ORIGINS = ["http://127.0.0.1:8000", "http://localhost:8000"]
+    SESSION_COOKIE_SECURE = False
+    CSRF_COOKIE_SECURE = False
 
 # Static files
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
