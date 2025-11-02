@@ -24,3 +24,6 @@ django-allauth
 PyJWT
 cryptography
 whitenoise
+django-storages
+Pillow
+boto3
