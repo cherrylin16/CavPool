@@ -6,6 +6,7 @@ from django.views.decorators.csrf import csrf_exempt
 from allauth.socialaccount.models import SocialAccount
 from .models import User
 from .forms import CustomUserCreationForm
+from django.conf import settings
 
 
 def driver_login(request):
@@ -71,7 +72,7 @@ def set_user_type(request, user_type):
 
 def start_social_login(request, role):
     if role not in ['driver', 'rider']:
-        pass  # Invalid role, handle accordingly
+        return redirect('/')  # Invalid role, handle accordingly
     request.session['role_intent'] = role
     return redirect('/accounts/google/login/')
 
@@ -79,8 +80,21 @@ def start_social_login(request, role):
 @login_required
 def login_redirect(request):
     user = request.user
-    if user.is_staff:  # Check if moderator
-        return redirect('moderator_dashboard')
+
+    # Check if user is a moderator
+    if user.is_moderator or user.email.lower() in [
+        email.lower() for email in getattr(settings, "MODERATOR_EMAILS", [])
+    ]:
+        if not user.is_moderator:
+            user.is_moderator = True
+            user.save()
+        return redirect('/moderator/')
+
+    # Check user_type for driver/rider
     if user.user_type == 'driver':
         return redirect('/driver/')
-    return redirect('/rider/')
+    if user.user_type == 'rider':
+        return redirect('/rider/')
+
+    # Fallback
+    return redirect('/')

@@ -12,6 +12,7 @@ class MySocialAccountAdapter(DefaultSocialAccountAdapter):
         
         # Check if user is a moderator
         if user.email and user.email.lower() in [e.lower() for e in settings.MODERATOR_EMAILS]:
+            user.is_moderator = True
             user.is_staff = True
         
         user.save()

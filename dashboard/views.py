@@ -55,3 +55,10 @@ def create_carpool_post(request):
 
 def landing(request):
     return render(request, "dashboard/landing.html")
+
+def moderator_dashboard(request):
+    # Optional: You can pass moderator-specific data to the template
+    display_name = request.user.username
+    return render(request, "dashboard/moderator_dashboard.html", {
+        "display_name": display_name
+    })

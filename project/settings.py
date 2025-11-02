@@ -74,7 +74,7 @@ AUTHENTICATION_BACKENDS = [
     'allauth.account.auth_backends.AuthenticationBackend',  # for allauth
 ]
 
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/accounts/login-redirect/'
 LOGOUT_REDIRECT_URL = '/'
 ACCOUNT_LOGIN_METHODS = {'username', 'email'}
 ACCOUNT_SIGNUP_FIELDS = {'email*', 'username*', 'password1*', 'password2*'}
@@ -87,11 +87,10 @@ ACCOUNT_EMAIL_REQUIRED = True
 SOCIALACCOUNT_QUERY_EMAIL = True
 LOGIN_REDIRECT_URL = '/accounts/login-redirect/'
 MODERATOR_EMAILS = [
-    'moderator@example.com',  # Example moderator
     'ride.sharing.test.moderator@gmail.com',  # Test account
     # Add your test Google account email here
 ]
-SOCIALACCOUNT_ADAPTER = 'accounts.adapters.MySocialAccountAdapter'
+SOCIALACCOUNT_ADAPTER = "accounts.adapters.MySocialAccountAdapter"
 
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
