@@ -8,6 +8,14 @@ class User(AbstractUser):
         ('admin', 'Admin'),
     ]
     user_type = models.CharField(max_length=10, choices=USER_TYPE_CHOICES, null=True, blank=True)
+    is_moderator = models.BooleanField(default=False)
+
+    def is_driver(self):
+        return self.user_type == 'driver'
+    def is_rider(self):
+        return self.user_type == 'rider'
+    def __str__(self):
+        return self.username
 
 class DriverProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -33,3 +41,5 @@ class RiderProfile(models.Model):
     
     def __str__(self):
         return f"{self.user.username} - Rider"
+    
+import accounts.signals  # Ensure signals are imported to register them

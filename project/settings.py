@@ -81,6 +81,24 @@ ACCOUNT_SIGNUP_FIELDS = {'email*', 'username*', 'password1*', 'password2*'}
 ACCOUNT_LOGOUT_ON_GET = True
 ACCOUNT_SESSION_REMEMBER = None
 SOCIALACCOUNT_AUTO_SIGNUP = True
+ACCOUNT_EMAIL_VERIFICATION = "none"
+ACCOUNT_AUTHENTICATION_METHOD = "email"
+ACCOUNT_EMAIL_REQUIRED = True
+SOCIALACCOUNT_QUERY_EMAIL = True
+LOGIN_REDIRECT_URL = '/accounts/login-redirect/'
+MODERATOR_EMAILS = [
+    'moderator@example.com',  # Example moderator
+    'ride.sharing.test.moderator@gmail.com',  # Test account
+    # Add your test Google account email here
+]
+SOCIALACCOUNT_ADAPTER = 'accounts.adapters.MySocialAccountAdapter'
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': ['profile', 'email'],
+        'AUTH_PARAMS': {'access_type': 'online'},
+    }
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

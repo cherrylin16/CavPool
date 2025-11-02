@@ -27,3 +27,4 @@ whitenoise
 django-storages
 Pillow
 boto3
+django-allauth
