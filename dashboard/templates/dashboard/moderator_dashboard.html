@@ -22,21 +22,13 @@
         <h1 class="text-center">Moderator Dashboard</h1>
         <p class="text-center">Welcome, {{ display_name }}!</p>
 
-        <div class="action-container">
-            <button class="btn btn-moderator btn-block">Approve Posts</button>
-            <button class="btn btn-moderator btn-block">Ban User</button>
-            <button class="btn btn-moderator btn-block">View Reports</button>
-            <button class="btn btn-moderator btn-block">Analytics</button>
-        </div>
-
-        <div class="logs-container">
-            <p>Recent Activity Logs</p>
-            <!-- Stub logs -->
-            <ul>
-                <li>User X created a post</li>
-                <li>User Y reported inappropriate content</li>
-                <li>User Z flagged for review</li>
-            </ul>
+        <div class="action-container text-center">
+            <div class="d-grid gap-3 col-6 mx-auto">
+                <a href="{% url 'flagged_posts' %}" class="btn btn-moderator">Approve Posts</a>
+                <button class="btn btn-moderator">Ban User</button>
+                <button class="btn btn-moderator">View Reports</button>
+                <button class="btn btn-moderator">Analytics</button>
+            </div>
         </div>
     </div>
 
