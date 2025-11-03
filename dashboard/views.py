@@ -4,6 +4,9 @@ from django.contrib import messages
 from accounts.models import RiderProfile, DriverProfile
 from .models import CarpoolPost
 from .forms import CarpoolPostForm
+from django.http import JsonResponse
+from .models import CarpoolPost, Flag
+from django.views.decorators.http import require_POST
 
 def rider_dashboard(request):
     profile = None
@@ -71,3 +74,22 @@ def moderator_dashboard(request):
     return render(request, "dashboard/moderator_dashboard.html", {
         "display_name": display_name
     })
+
+@login_required
+@require_POST
+def flag_post(request, post_id):
+    post = CarpoolPost.objects.get(id=post_id)
+    reason = request.POST.get('reason', 'other')
+    details = request.POST.get('details', '')
+
+    flag, created = Flag.objects.get_or_create(
+        post=post,
+        flagged_by=request.user,
+        defaults={'reason': reason, 'details': details}
+    )
+
+    if not created:
+        return JsonResponse({'success': False, 'message': 'You already flagged this post.'})
+
+    messages.success(request, "Post flagged successfully. Our moderators will review it soon.")
+    return redirect(request.META.get('HTTP_REFERER', '/'))
