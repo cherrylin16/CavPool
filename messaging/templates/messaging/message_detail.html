@@ -105,7 +105,8 @@
       const input = document.querySelector('#chat-message-input');
       const message = input.value.trim();
       if (message) {
-        document.querySelector('#fallback-submit').click();
+        const form = input.closest('form');
+        form.submit();
       }
     };
 
