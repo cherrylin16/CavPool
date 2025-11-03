@@ -44,6 +44,14 @@ def driver_dashboard(request):
 @login_required
 def create_carpool_post(request):
     if request.method == 'POST':
+        # Handle deletion
+        if 'delete_post_id' in request.POST:
+            post_id = request.POST.get('delete_post_id')
+            CarpoolPost.objects.filter(id=post_id, author=request.user).delete()
+            messages.success(request, 'Post deleted successfully.')
+            return redirect('driver dashboard')
+
+        # Handle creation
         form = CarpoolPostForm(request.POST, request.FILES)
         if form.is_valid():
             post = form.save(commit=False)
@@ -51,6 +59,7 @@ def create_carpool_post(request):
             post.save()
             messages.success(request, 'Carpool post created successfully!')
             return redirect('driver dashboard')
+        
     return redirect('driver dashboard')
 
 def landing(request):
