@@ -73,11 +73,41 @@ def landing(request):
     return render(request, "dashboard/landing.html")
 
 def moderator_dashboard(request):
-    # Optional: You can pass moderator-specific data to the template
     display_name = request.user.username
     return render(request, "dashboard/moderator_dashboard.html", {
         "display_name": display_name
     })
+
+@login_required
+def flagged_posts(request):
+    if not request.user.is_moderator:
+        return redirect('/')
+    
+    # Get posts that have flags
+    flagged_posts = CarpoolPost.objects.filter(flags__isnull=False).distinct().prefetch_related('flags__flagged_by')
+    return render(request, "dashboard/flagged_posts.html", {
+        "flagged_posts": flagged_posts
+    })
+
+@login_required
+@require_POST
+def moderate_post(request, post_id):
+    if not request.user.is_moderator:
+        return redirect('/')
+    
+    post = CarpoolPost.objects.get(id=post_id)
+    action = request.POST.get('action')
+    
+    if action == 'approve':
+        # Remove all flags for this post
+        Flag.objects.filter(post=post).delete()
+        messages.success(request, f'Post approved and all flags removed.')
+    elif action == 'delete':
+        # Delete the post and its flags
+        post.delete()
+        messages.success(request, f'Post deleted successfully.')
+    
+    return redirect('flagged_posts')
 
 @login_required
 @require_POST
