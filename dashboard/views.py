@@ -20,9 +20,11 @@ def rider_dashboard(request):
             pass
     
     posts = CarpoolPost.objects.all()
+    flagged_posts = set(Flag.objects.filter(flagged_by=request.user).values_list('post_id', flat=True))
     return render(request, "dashboard/rider_dashboard.html", {
         'display_name': display_name,
-        'posts': posts
+        'posts': posts,
+        'flagged_posts': flagged_posts
     })
 
 def driver_dashboard(request):
@@ -37,11 +39,13 @@ def driver_dashboard(request):
             pass
     
     posts = CarpoolPost.objects.all()
+    flagged_posts = set(Flag.objects.filter(flagged_by=request.user).values_list('post_id', flat=True))
     form = CarpoolPostForm()
     return render(request, "dashboard/driver_dashboard.html", {
         'display_name': display_name, 
         'posts': posts, 
-        'form': form
+        'form': form,
+        'flagged_posts': flagged_posts
     })
 
 @login_required
@@ -82,14 +86,15 @@ def flag_post(request, post_id):
     reason = request.POST.get('reason', 'other')
     details = request.POST.get('details', '')
 
-    flag, created = Flag.objects.get_or_create(
+    flag, created = Flag.objects.update_or_create(
         post=post,
         flagged_by=request.user,
         defaults={'reason': reason, 'details': details}
     )
 
-    if not created:
-        return JsonResponse({'success': False, 'message': 'You already flagged this post.'})
-
-    messages.success(request, "Post flagged successfully. Our moderators will review it soon.")
+    if created:
+        messages.success(request, "Post flagged successfully. Our moderators will review it soon.")
+    else:
+        messages.success(request, "Flag updated successfully. Our moderators will review it soon.")
+    
     return redirect(request.META.get('HTTP_REFERER', '/'))

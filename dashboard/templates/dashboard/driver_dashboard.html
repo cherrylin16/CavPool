@@ -71,12 +71,21 @@
                                             Delete
                                             </button>
                                         {% endif %}
-                                        <button class="btn btn-sm btn-outline-warning"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#flagPostModal"
-                                            data-post-id="{{ post.id }}">
-                                            <i class="material-icons" style="font-size: 16px;">flag</i>
-                                        </button>
+                                        {% if post.id in flagged_posts %}
+                                            <button class="btn btn-sm btn-warning"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#flagPostModal"
+                                                data-post-id="{{ post.id }}">
+                                                <i class="material-icons" style="font-size: 16px;">flag</i> Flagged
+                                            </button>
+                                        {% else %}
+                                            <button class="btn btn-sm btn-outline-warning"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#flagPostModal"
+                                                data-post-id="{{ post.id }}">
+                                                <i class="material-icons" style="font-size: 16px;">flag</i>
+                                            </button>
+                                        {% endif %}
                                     </div>    
                                 </div>
                             </div>
