@@ -31,11 +31,10 @@
           {% endfor %}
         </div>
         <div class="chat-input">
-          <form method="POST" style="display: flex; width: 100%;">
+          <form id="message-form" method="POST" style="display: flex; width: 100%;">
             {% csrf_token %}
-            <input id="chat-message-input" name="message" type="text" placeholder="Type a message..." style="flex: 1;">
-            <button id="chat-message-submit" type="button">Send</button>
-            <button type="submit" style="display: none;" id="fallback-submit">Send</button>
+            <input id="chat-message-input" name="message" type="text" placeholder="Type a message..." style="flex: 1;" required>
+            <button id="chat-message-submit" type="submit">Send</button>
           </form>
         </div>
       </div>
@@ -100,23 +99,12 @@
       websocketConnected = false;
     };
 
-    document.querySelector('#chat-message-submit').onclick = function(e) {
+    document.querySelector('#message-form').addEventListener('submit', function(e) {
       const input = document.querySelector('#chat-message-input');
       const message = input.value.trim();
-      if (message) {
-        if (websocketConnected && chatSocket.readyState === WebSocket.OPEN) {
-          chatSocket.send(JSON.stringify({'message': message}));
-          input.value = '';
-        } else {
-          // Fallback to form submission
-          document.querySelector('#fallback-submit').click();
-        }
-      }
-    };
-
-    document.querySelector('#chat-message-input').addEventListener('keypress', function(e) {
-      if (e.key === 'Enter') {
-        document.querySelector('#chat-message-submit').click();
+      if (!message) {
+        e.preventDefault();
+        return false;
       }
     });
   </script>

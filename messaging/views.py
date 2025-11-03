@@ -8,8 +8,38 @@ User = get_user_model()
 
 @login_required
 def message_list(request):
-    users = User.objects.exclude(id=request.user.id)
-    return render(request, "messaging/message_list.html", {"users": users})
+    from django.db.models import Q, Max
+    
+    # Get users who have active conversations with current user
+    conversations = Message.objects.filter(
+        Q(sender=request.user) | Q(receiver=request.user)
+    ).values('sender', 'receiver').annotate(
+        last_message_time=Max('timestamp')
+    ).order_by('-last_message_time')
+    
+    # Build list of conversation partners with last message
+    conversation_data = []
+    seen_users = set()
+    
+    for conv in conversations:
+        other_user_id = conv['sender'] if conv['receiver'] == request.user.id else conv['receiver']
+        
+        if other_user_id not in seen_users and other_user_id != request.user.id:
+            seen_users.add(other_user_id)
+            other_user = User.objects.get(id=other_user_id)
+            
+            # Get the last message between these users
+            last_message = Message.objects.filter(
+                Q(sender=request.user, receiver=other_user) |
+                Q(sender=other_user, receiver=request.user)
+            ).order_by('-timestamp').first()
+            
+            conversation_data.append({
+                'user': other_user,
+                'last_message': last_message
+            })
+    
+    return render(request, "messaging/message_list.html", {"conversations": conversation_data})
 
 
 @login_required
