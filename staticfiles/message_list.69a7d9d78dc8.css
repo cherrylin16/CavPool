@@ -1,0 +1,73 @@
+/* Message list container */
+.main h1 {
+    text-align: center;
+    margin-top: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .main p {
+    text-align: center;
+    color: #333;
+    margin-bottom: 30px;
+  }
+  
+  /* New message button */
+  .new-message-btn {
+    display: inline-block;
+    background-color: #C47A35;
+    color: white;
+    padding: 10px 18px;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: background-color 0.2s ease;
+    margin-bottom: 20px;
+  }
+  
+  .new-message-btn:hover {
+    background-color: #a0642c;
+    color: white;
+  }
+  
+  /* Conversation list */
+  .list-group {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+  }
+  
+  .list-group-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    font-size: 1rem;
+    border: none;
+    border-bottom: 1px solid #eee;
+    transition: background-color 0.2s ease;
+  }
+  
+  .list-group-item:last-child {
+    border-bottom: none;
+  }
+  
+  .list-group-item:hover {
+    background-color: #f3f3f3;
+  }
+  
+  /* Username text */
+  .list-group-item strong {
+    color: #37518C;
+  }
+  
+  /* Empty state text */
+  .no-conversations {
+    text-align: center;
+    color: #888;
+    font-style: italic;
+    margin-top: 30px;
+  }
+  
+  /* Badge arrow style */
+  .badge {
+    background-color: #37518C;
+    font-size: 0.9rem;
+  }

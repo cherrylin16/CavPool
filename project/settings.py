@@ -19,7 +19,7 @@ import secrets
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Load .env file
-load_dotenv()
+load_dotenv(BASE_DIR / 'keys.env')
 
 
 # Quick-start development settings - unsuitable for production
@@ -28,6 +28,7 @@ load_dotenv()
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv(
     "DJANGO_SECRET_KEY",
+    default=secrets.token_urlsafe(nbytes=64),
 )
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -46,6 +47,7 @@ else:
 # Application definition
 
 INSTALLED_APPS = [
+    'channels', #Must come first please and thank you :)
     'whitenoise.runserver_nostatic',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -53,18 +55,30 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'storages',
 
-    # Dashboard app
+    'accounts',  # Must be before allauth
     'dashboard',
     'rider_profile',
-    'driver_profile',
-    'accounts',
+    'driver_profile.apps.DriverProfileConfig',
+    'messaging.apps.MessagingConfig',
     'django.contrib.sites',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
 ]
+
+ASGI_APPLICATION = 'project.asgi.application'
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            'hosts': [("127.0.0.1", 6379)], #TODO: replace "127.0.0.1 with redis url provided by heroku redis add-on."
+        },
+    },
+}
 
 SITE_ID = 1
 
@@ -73,13 +87,33 @@ AUTHENTICATION_BACKENDS = [
     'allauth.account.auth_backends.AuthenticationBackend',  # for allauth
 ]
 
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/accounts/login-redirect/'
 LOGOUT_REDIRECT_URL = '/'
 ACCOUNT_LOGIN_METHODS = {'username', 'email'}
 ACCOUNT_SIGNUP_FIELDS = {'email*', 'username*', 'password1*', 'password2*'}
 ACCOUNT_LOGOUT_ON_GET = True
 ACCOUNT_SESSION_REMEMBER = None
 SOCIALACCOUNT_AUTO_SIGNUP = True
+ACCOUNT_EMAIL_VERIFICATION = "none"
+ACCOUNT_AUTHENTICATION_METHOD = "email"
+ACCOUNT_EMAIL_REQUIRED = True
+SOCIALACCOUNT_QUERY_EMAIL = True
+SOCIALACCOUNT_LOGIN_ON_GET = True
+MODERATOR_EMAILS = [
+    'ride.sharing.test.moderator@gmail.com',  # Test account
+    # Add your test Google account email here
+]
+SOCIALACCOUNT_ADAPTER = "accounts.adapters.MySocialAccountAdapter"
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': ['profile', 'email'],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+            'prompt': 'select_account'
+        },
+    }
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -172,12 +206,31 @@ USE_TZ = True
 
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATIC_URL = 'static/'
+#STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage' # Allowing heroku to find static files
+
+# AWS S3 Configuration
+AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME')
+AWS_S3_REGION_NAME = os.getenv('AWS_S3_REGION_NAME', 'us-east-1')
+AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
+AWS_DEFAULT_ACL = 'public-read'
+AWS_S3_OBJECT_PARAMETERS = {
+    'CacheControl': 'max-age=86400',
+}
 
 STORAGES = {
     "staticfiles": {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
+    "default": {
+        "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
+    },
 }
+
+# Media files
+MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/'
+#DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
 WHITENOISE_KEEP_ONLY_HASHED_FILES = True
 
@@ -203,11 +256,13 @@ if IS_HEROKU_APP:
             ],
             'AUTH_PARAMS': {
                 'access_type': 'online',
+                'prompt': 'select_account'
             }
         }
     }
 else:
     # Use settings configuration for local development
+
     SOCIALACCOUNT_PROVIDERS = {
         'google': {
             'APP': {
@@ -221,6 +276,7 @@ else:
             ],
             'AUTH_PARAMS': {
                 'access_type': 'online',
+                'prompt': 'select_account'
             }
         }
     }
@@ -258,5 +314,12 @@ if IS_HEROKU_APP:
     SESSION_COOKIE_AGE = 3600
 
     USE_X_FORWARDED_HOST = True
+else:
+    # Local development settings
+    CSRF_TRUSTED_ORIGINS = ["http://127.0.0.1:8000", "http://localhost:8000"]
+    SESSION_COOKIE_SECURE = False
+    CSRF_COOKIE_SECURE = False
 
+# Static files
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
