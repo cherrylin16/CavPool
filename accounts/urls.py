@@ -10,4 +10,5 @@ urlpatterns = [
     path('', include('allauth.urls')),
     path('social/start/<str:role>/', views.start_social_login, name='start_social_login'),
     path('login-redirect/', views.login_redirect, name='login_redirect'),
+    path('delete-account/', views.delete_account, name='delete_account'),
 ]
