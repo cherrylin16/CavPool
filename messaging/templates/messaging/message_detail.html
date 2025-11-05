@@ -21,7 +21,7 @@
     <div class="main">
       <div class="chat-container">
         <div class="chat-header">
-          DM with {{ other_user.username }}
+          DM with {% if not other_user.is_active %}[deleted]{% else %}{{ other_user.username }}{% endif %}
         </div>
         <div id="chat-log" class="chat-messages">
           {% for msg in messages %}

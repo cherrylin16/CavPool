@@ -53,7 +53,7 @@
                             <div class="col-xl-3 col-lg-4 col-md-6 mb-3">
                                 <div class="card" style="height: 300px;">
                                     <div class="card-body d-flex flex-column">
-                                        <h6 class="card-subtitle mb-2 text-muted">{{ post.author.driverprofile.name|default:post.author.username }} - {{ post.created_at|date:"M d, Y" }}</h6>
+                                        <h6 class="card-subtitle mb-2 text-muted">{% if not post.author.is_active %}[deleted]{% else %}{{ post.author.driverprofile.name|default:post.author.username }}{% endif %} - {{ post.created_at|date:"M d, Y" }}</h6>
                                         <p class="card-text">{{ post.text }}</p>
                                         {% if post.image %}
                                             {% if post.image_visibility == 'all' or post.image_visibility == 'drivers' %}
