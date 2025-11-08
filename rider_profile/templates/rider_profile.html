@@ -41,7 +41,7 @@
             <img src="{{ profile.profile_picture.url }}" alt="Profile Picture" class="profile-pic">
         {% else %}
             <div style="width: 100px; height: 100px; background: #ddd; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 10px 0;">
-                <span style="font-size: 40px; color: #666;">{{ user.username.0|upper }}</span>
+                <span style="font-size: 40px; color: #666;">{{ profile.name.0|default:user.username.0|upper }}</span>
             </div>
         {% endif %}
         <p><strong>Name:</strong> {{ profile.name|default:"Not provided" }}</p>
