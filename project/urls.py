@@ -25,4 +25,5 @@ urlpatterns = [
     path("", include("driver_profile.urls")),
     path("", include("rider_profile.urls")),
     path("messages/", include("messaging.urls")),
+    path("ride-requests/", include("ride_requests.urls")),
 ]

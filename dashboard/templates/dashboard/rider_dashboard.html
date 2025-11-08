@@ -68,7 +68,15 @@
                                                 </div>
                                             {% endif %}
                                         {% endif %}
-                                        <div class="d-flex justify-content-end mt-auto">
+                                        <div class="d-flex justify-content-between mt-auto">
+                                            {% if post.id in user_requests %}
+                                                <button class="btn btn-sm btn-secondary" disabled>Request Sent</button>
+                                            {% else %}
+                                                <form method="post" action="{% url 'ride_requests:request_ride' post.id %}">
+                                                    {% csrf_token %}
+                                                    <button type="submit" class="btn btn-sm btn-success">Request Ride</button>
+                                                </form>
+                                            {% endif %}
                                             {% if post.id in flagged_posts %}
                                                 <button class="btn btn-sm btn-warning"
                                                     data-bs-toggle="modal"

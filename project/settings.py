@@ -19,7 +19,7 @@ import secrets
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Load .env file
-load_dotenv(BASE_DIR / 'keys.env')
+load_dotenv(BASE_DIR / '.env')
 
 
 # Quick-start development settings - unsuitable for production
@@ -62,6 +62,7 @@ INSTALLED_APPS = [
     'rider_profile',
     'driver_profile.apps.DriverProfileConfig',
     'messaging.apps.MessagingConfig',
+    'ride_requests',
     'django.contrib.sites',
     'allauth',
     'allauth.account',
