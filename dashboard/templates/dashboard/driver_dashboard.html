@@ -31,13 +31,19 @@
 
             <div class="search-container">
             
-                <form class="searchbar">
-                    <input type="text" placeholder="Search the name of a carpool trip, driver, location, or keyword">
-                </form>
+                <form method="get" class="searchbar d-flex" action = "{% url 'driver dashboard' %}">
+                    <input  
+                    type = "text"
+                    name = "q"
+                    class = "form-control me-2"
+                    placeholder="Search the name of a carpool trip, driver, location, or keyword"
+                    value = "{{ request.GET.q|default:'' }}"
+                    >
 
-                <button type="submit" class="search-button" type="button">
-                    <span class="material-symbols-outlined" style="font-size:27px;">search</span>            
-                </button>
+                    <button type="submit" class="search-button">
+                        <span class="material-symbols-outlined" style="font-size:27px;">search</span>            
+                    </button>
+                </form>
 
                 <button class="create-trip btn btn-primary btn-block" type="button" data-bs-toggle="modal" data-bs-target="#createPostModal">Create a Carpool Trip</button>
             </div>
@@ -50,11 +56,15 @@
                 <div class="listings-box flex-grow-1 me-4">
                     <div class="row">
                         {% for post in posts %}
-                            <div class="col-xl-3 col-lg-4 col-md-6 mb-3">
-                                <div class="card" style="height: 300px;">
+                            <div class="col-xl-4 col-lg-4 col-md-6 mb-3">
+                                <div class="card" style="height: 500px;">
                                     <div class="card-body d-flex flex-column">
-                                        <h6 class="card-subtitle mb-2 text-muted">{{ post.author.driverprofile.name|default:post.author.username }} - {{ post.created_at|date:"M d, Y" }}</h6>
-                                        <p class="card-text">{{ post.text }}</p>
+                                        <h6 class="card-subtitle mb-3"><strong>{{post.name}}</strong></h6>
+                                        <p class="card-text"><i>Posted:</i> {{ post.created_at|date:"M d, Y" }} by {{ post.author.driverprofile.name|default:post.author.username }}</p>
+                                        <p class="card-text"><i>Date:</i> {{ post.date }}</p>
+                                        <p class="card-text"><i>Pickup</i>: {{ post.pickup }} at {{ post.pickup_time }}</p>
+                                        <p class="card-text"><i>Dropoff:</i> {{ post.dropoff }} at {{ post.dropoff_time }}</p>
+                                        <p class="card-text"><i>Description:</i> {{ post.notes }}</p>
                                         {% if post.image %}
                                             {% if post.image_visibility == 'all' or post.image_visibility == 'drivers' %}
                                                 <div class="mb-3">
@@ -136,13 +146,45 @@
                     <div class="modal-body">
                         {% csrf_token %}
                         <div class="mb-3">
-                            <label class="form-label">Description</label>
-                            {{ form.text }}
+                            <label class="form-label">How would you like to name this carpool trip?</label>
+                                {{ form.name }}
+                            </div>
+                        <div class = "mb-3">
+                            <label class="form-label">What date is this trip occurring?</label>
+                                {{ form.date }}
                         </div>
+                        <div class="mb-3">
+                                <label class="form-label">Where will you be going? Enter either a valid address or recognizable name of the place.</label>
+                                {{ form.dropoff }}
+                        </div>    
+                   
+                        <div class="mb-3">
+                                <label class="form-label">What time is dropoff?</label>
+                                {{ form.dropoff_time }}
+                        </div>  
+
+                        <div class="mb-3">
+                                <label class="form-label">Where will you pick riders up? Enter either a valid address or recognizable name of the place.</label>
+                                {{ form.pickup }}
+                        </div> 
+
+                             <div class="mb-3">
+                                <label class="form-label">What time is pickup?</label>
+                                {{ form.pickup_time }}
+                        </div>   
+
+                    
+        
+                        <div class="mb-3">
+                            <label class="form-label">Further Description</label>
+                            {{ form.notes }}
+                        </div>   
+                        
                         <div class="mb-3">
                             <label class="form-label">Attach Image (optional)</label>
                             {{ form.image }}
                         </div>
+
                         <div class="mb-3">
                             <label class="form-label">Who can see the image?</label>
                             {{ form.image_visibility }}
