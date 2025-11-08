@@ -16,6 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.views.generic import TemplateView
 
 urlpatterns = [
     path("ridesharing/", include("ridesharing.urls")),
@@ -25,4 +26,5 @@ urlpatterns = [
     path("", include("driver_profile.urls")),
     path("", include("rider_profile.urls")),
     path("messages/", include("messaging.urls")),
+    path('google29704b4949bc33ee.html', TemplateView.as_view(template_name='google1234567890abcdef.html')),
 ]
