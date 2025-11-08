@@ -26,9 +26,9 @@ body {
 }
 
 .main{
-    height: 100%;
+    flex-grow: 1;
     padding: 40px;
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 
 .side-panel-toggle {
