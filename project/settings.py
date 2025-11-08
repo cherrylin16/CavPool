@@ -131,6 +131,7 @@ ROOT_URLCONF = 'project.urls'
 
 TEMPLATES = [
     {
+        'DIRS': [BASE_DIR / "templates"], 
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': ['dashboard/templates'],
         'APP_DIRS': True,
