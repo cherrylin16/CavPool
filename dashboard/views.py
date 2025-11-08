@@ -24,7 +24,7 @@ def rider_dashboard(request):
      # search queries
     query = request.GET.get('q', '')
 
-    posts = CarpoolPost.objects.all()
+    posts = CarpoolPost.objects.filter(author__is_active=True)
 
     if query:
         posts = posts.filter(
@@ -43,7 +43,7 @@ def rider_dashboard(request):
     # Get user's ride requests and add them to posts
     user_requests = set()
     if request.user.is_authenticated:
-        user_ride_requests = RideRequest.objects.filter(rider=request.user)
+        user_ride_requests = RideRequest.objects.filter(rider=request.user, rider__is_active=True)
         user_requests = set(user_ride_requests.values_list('post_id', flat=True))
         request_dict = {req.post_id: req for req in user_ride_requests}
         
@@ -73,7 +73,7 @@ def driver_dashboard(request):
     # search queries
     query = request.GET.get('q', '')
 
-    posts = CarpoolPost.objects.all()
+    posts = CarpoolPost.objects.filter(author__is_active=True)
 
     if query:
         posts = posts.filter(

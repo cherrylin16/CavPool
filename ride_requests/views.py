@@ -33,7 +33,7 @@ def request_ride(request, post_id):
 @login_required
 def manage_requests(request, post_id):
     post = get_object_or_404(CarpoolPost, id=post_id, author=request.user)
-    requests = RideRequest.objects.filter(post=post)
+    requests = RideRequest.objects.filter(post=post, rider__is_active=True)
     
     return render(request, 'ride_requests/manage_requests.html', {
         'post': post,
