@@ -69,8 +69,17 @@
                                             {% endif %}
                                         {% endif %}
                                         <div class="d-flex justify-content-between mt-auto">
-                                            {% if post.id in user_requests %}
-                                                <button class="btn btn-sm btn-secondary" disabled>Request Sent</button>
+                                            {% if post.user_request %}
+                                                {% if post.user_request.status == 'pending' %}
+                                                    <form method="post" action="{% url 'ride_requests:cancel_request' post.user_request.id %}">
+                                                        {% csrf_token %}
+                                                        <button type="submit" class="btn btn-sm btn-warning">Cancel Request</button>
+                                                    </form>
+                                                {% else %}
+                                                    <span class="btn btn-sm btn-{% if post.user_request.status == 'approved' %}success{% else %}danger{% endif %}" disabled>
+                                                        {{ post.user_request.get_status_display }}
+                                                    </span>
+                                                {% endif %}
                                             {% else %}
                                                 <form method="post" action="{% url 'ride_requests:request_ride' post.id %}">
                                                     {% csrf_token %}

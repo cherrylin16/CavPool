@@ -52,3 +52,11 @@ def update_request_status(request, request_id):
         messages.success(request, f'Request {status} successfully!')
     
     return redirect('ride_requests:manage_requests', post_id=ride_request.post.id)
+
+@login_required
+@require_POST
+def cancel_request(request, request_id):
+    ride_request = get_object_or_404(RideRequest, id=request_id, rider=request.user)
+    ride_request.delete()
+    messages.success(request, 'Ride request cancelled successfully!')
+    return redirect(request.META.get('HTTP_REFERER', '/'))

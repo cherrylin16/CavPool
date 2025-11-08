@@ -40,10 +40,16 @@ def rider_dashboard(request):
     
     flagged_posts = set(Flag.objects.filter(flagged_by=request.user).values_list('post_id', flat=True))
     
-    # Get user's ride requests
+    # Get user's ride requests and add them to posts
     user_requests = set()
     if request.user.is_authenticated:
-        user_requests = set(RideRequest.objects.filter(rider=request.user).values_list('post_id', flat=True))
+        user_ride_requests = RideRequest.objects.filter(rider=request.user)
+        user_requests = set(user_ride_requests.values_list('post_id', flat=True))
+        request_dict = {req.post_id: req for req in user_ride_requests}
+        
+        # Add request object to each post
+        for post in posts:
+            post.user_request = request_dict.get(post.id)
     
     return render(request, "dashboard/rider_dashboard.html", {
         'display_name': display_name,
