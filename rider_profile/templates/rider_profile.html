@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="{% static 'rider_dashboard.css' %}">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=menu,search" />
     <style>
-        body { font-family: Arial, sans-serif; max-width: 600px; margin: 50px auto; padding: 20px; background-color: #F0F8FF; }
+        body {max-width: 600px; margin: 50px auto; padding: 20px; background-color: #F0F8FF; }
         .profile-info { background: #f5f5f5; padding: 20px; border-radius: 5px; margin: 20px 0; }
         .edit-form { display: none; background: #e8f4fd; padding: 20px; border-radius: 5px; margin: 20px 0; }
         .btn-primary{background: #37518C; color: white; border-color: #37518C !important;}
@@ -126,8 +126,7 @@
         <div class="side-panel">
             <div class="d-grid gap-2">
                 <a href="{% url 'rider dashboard' %}" role="button" class="btn btn-primary btn-lg btn-block" style="margin-top: 5px;">Rider Dashboard</a>
-                <a href="{% url 'rider_profile' %}" role="button" class="btn btn-primary btn-lg btn-block" style="margin-top: 5px;">Rider Profile</a>
-                <a href="{% url 'message_list' %}" class="btn btn-primary btn-block btn-lg py-2">Messaging</a>
+                <a href="{% url 'message_list' %}" class="btn btn-primary btn-block btn-lg py-2" style="margin-top: 5px">Messaging</a>
                 <a href="" class="btn btn-primary btn-block btn-lg py-2" style="margin-top: 5px">History</a>
                 <a href="{% url 'account_logout' %}" class="btn btn-primary btn-block btn-lg py-2" style="margin-top: 5px">Log Out</a>
             </div>
