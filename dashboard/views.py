@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from accounts.models import RiderProfile, DriverProfile, User
@@ -8,6 +8,7 @@ from django.http import JsonResponse
 from .models import CarpoolPost, Flag
 from django.views.decorators.http import require_POST
 from django.db.models import Q
+from ride_requests.models import RideRequest
 
 def rider_dashboard(request):
     profile = None
@@ -23,7 +24,7 @@ def rider_dashboard(request):
      # search queries
     query = request.GET.get('q', '')
 
-    posts = CarpoolPost.objects.all()
+    posts = CarpoolPost.objects.filter(author__is_active=True)
 
     if query:
         posts = posts.filter(
@@ -38,11 +39,24 @@ def rider_dashboard(request):
         ).distinct()
     
     flagged_posts = set(Flag.objects.filter(flagged_by=request.user).values_list('post_id', flat=True))
+    
+    # Get user's ride requests and add them to posts
+    user_requests = set()
+    if request.user.is_authenticated:
+        user_ride_requests = RideRequest.objects.filter(rider=request.user, rider__is_active=True)
+        user_requests = set(user_ride_requests.values_list('post_id', flat=True))
+        request_dict = {req.post_id: req for req in user_ride_requests}
+        
+        # Add request object to each post
+        for post in posts:
+            post.user_request = request_dict.get(post.id)
+    
     return render(request, "dashboard/rider_dashboard.html", {
         'display_name': display_name,
         'posts': posts,
         'query': query,
-        'flagged_posts': flagged_posts
+        'flagged_posts': flagged_posts,
+        'user_requests': user_requests
     })
 
 def driver_dashboard(request):
@@ -59,7 +73,7 @@ def driver_dashboard(request):
     # search queries
     query = request.GET.get('q', '')
 
-    posts = CarpoolPost.objects.all()
+    posts = CarpoolPost.objects.filter(author__is_active=True)
 
     if query:
         posts = posts.filter(

@@ -62,6 +62,7 @@ INSTALLED_APPS = [
     'rider_profile',
     'driver_profile.apps.DriverProfileConfig',
     'messaging.apps.MessagingConfig',
+    'ride_requests',
     'django.contrib.sites',
     'allauth',
     'allauth.account',
