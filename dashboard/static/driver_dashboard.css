@@ -24,11 +24,9 @@ body {
 }
 
 .main{
-    height: 100%;
+    flex-grow: 1;
     padding: 40px;
-    overflow-y: scroll;
-    /* scrollbar-width: none;
-    -ms-overflow-style: none; */
+    overflow-y: auto;
 }
 
 /* .main::-webkit-scrollbar {

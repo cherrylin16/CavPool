@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from accounts.models import RiderProfile, DriverProfile
+from accounts.models import RiderProfile, DriverProfile, User
 from .models import CarpoolPost
 from .forms import CarpoolPostForm
 from django.http import JsonResponse
@@ -164,3 +164,102 @@ def flag_post(request, post_id):
         messages.success(request, "Flag updated successfully. Our moderators will review it soon.")
     
     return redirect(request.META.get('HTTP_REFERER', '/'))
+
+@login_required
+def ban_user(request):
+    if not request.user.is_moderator:
+        return redirect('/')
+    
+    search_query = request.GET.get('search', '')
+    user_found = None
+    has_driver_profile = False
+    has_rider_profile = False
+    user_type_display = 'None'
+    
+    if search_query:
+        try:
+            # First try exact username match, then email match
+            user_found = User.objects.filter(username__iexact=search_query).first()
+            if not user_found:
+                user_found = User.objects.filter(email__iexact=search_query).first()
+            
+            if user_found:
+                driver_profiles = DriverProfile.objects.filter(user=user_found)
+                rider_profiles = RiderProfile.objects.filter(user=user_found)
+                
+                has_driver_profile = driver_profiles.exists()
+                has_rider_profile = rider_profiles.exists()
+                
+                # If no actual profiles exist but user_type is set, treat as if profile exists for deletion purposes
+                if not has_driver_profile and user_found.user_type == 'driver':
+                    has_driver_profile = True
+                if not has_rider_profile and user_found.user_type == 'rider':
+                    has_rider_profile = True
+                
+                # Create display string for user types
+                user_types = []
+                if has_driver_profile:
+                    user_types.append('Driver')
+                if has_rider_profile:
+                    user_types.append('Rider')
+                user_type_display = ' and '.join(user_types) if user_types else 'None'
+        except Exception:
+            pass
+    
+    if request.method == 'POST':
+        user_id = request.POST.get('user_id')
+        profile_type = request.POST.get('profile_type')
+        
+        try:
+            target_user = User.objects.get(id=user_id)
+            
+            if profile_type == 'driver':
+                try:
+                    target_user.driverprofile.delete()
+                except DriverProfile.DoesNotExist:
+                    pass
+                messages.success(request, f'Driver profile for {target_user.username} has been deleted.')
+            elif profile_type == 'rider':
+                try:
+                    target_user.riderprofile.delete()
+                except RiderProfile.DoesNotExist:
+                    pass
+                messages.success(request, f'Rider profile for {target_user.username} has been deleted.')
+            
+            # Check if user has any remaining profiles
+            has_driver = DriverProfile.objects.filter(user=target_user).exists()
+            has_rider = RiderProfile.objects.filter(user=target_user).exists()
+            
+            # Always clear the user_type for the deleted profile type
+            if profile_type == 'driver':
+                if has_rider:
+                    target_user.user_type = 'rider'
+                else:
+                    target_user.user_type = None
+            elif profile_type == 'rider':
+                if has_driver:
+                    target_user.user_type = 'driver'
+                else:
+                    target_user.user_type = None
+            
+            # If no profiles left, deactivate account
+            if not has_driver and not has_rider:
+                target_user.username = f"[deleted]_{target_user.id}"
+                target_user.email = f"deleted_{target_user.id}@deleted.com"
+                target_user.is_active = False
+                messages.success(request, f'User account has been completely deactivated.')
+            
+            target_user.save()
+            
+        except Exception as e:
+            messages.error(request, f'Error deleting profile: {e}')
+        
+        return redirect('ban_user')
+    
+    return render(request, 'dashboard/ban_user.html', {
+        'search_query': search_query,
+        'user_found': user_found,
+        'has_driver_profile': has_driver_profile,
+        'has_rider_profile': has_rider_profile,
+        'user_type_display': user_type_display,
+    })
