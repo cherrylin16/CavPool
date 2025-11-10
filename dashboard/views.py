@@ -7,6 +7,7 @@ from .forms import CarpoolPostForm
 from django.http import JsonResponse
 from .models import CarpoolPost, Flag
 from django.views.decorators.http import require_POST
+from django.db.models import Q
 
 def rider_dashboard(request):
     profile = None
@@ -18,12 +19,29 @@ def rider_dashboard(request):
                 display_name = profile.name
         except RiderProfile.DoesNotExist:
             pass
-    
+
+     # search queries
+    query = request.GET.get('q', '')
+
     posts = CarpoolPost.objects.all()
+
+    if query:
+        posts = posts.filter(
+            Q(name__icontains=query) |
+            Q(dropoff__icontains=query) |
+            Q(pickup__icontains=query) |
+            Q(date__icontains=query) |
+            Q(pickup_time__icontains=query) |
+            Q(dropoff_time__icontains=query) |
+            Q(name__icontains=query) |
+            Q(author__username__icontains=query)
+        ).distinct()
+    
     flagged_posts = set(Flag.objects.filter(flagged_by=request.user).values_list('post_id', flat=True))
     return render(request, "dashboard/rider_dashboard.html", {
         'display_name': display_name,
         'posts': posts,
+        'query': query,
         'flagged_posts': flagged_posts
     })
 
@@ -38,12 +56,30 @@ def driver_dashboard(request):
         except DriverProfile.DoesNotExist:
             pass
     
+    # search queries
+    query = request.GET.get('q', '')
+
     posts = CarpoolPost.objects.all()
+
+    if query:
+        posts = posts.filter(
+            Q(name__icontains=query) |
+            Q(dropoff__icontains=query) |
+            Q(pickup__icontains=query) |
+            Q(date__icontains=query) |
+            Q(pickup_time__icontains=query) |
+            Q(dropoff_time__icontains=query) |
+            Q(name__icontains=query) |
+            Q(author__username__icontains=query)
+        ).distinct()
+
+
     flagged_posts = set(Flag.objects.filter(flagged_by=request.user).values_list('post_id', flat=True))
     form = CarpoolPostForm()
     return render(request, "dashboard/driver_dashboard.html", {
         'display_name': display_name, 
         'posts': posts, 
+        'query': query,
         'form': form,
         'flagged_posts': flagged_posts
     })

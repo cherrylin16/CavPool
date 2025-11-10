@@ -10,8 +10,14 @@ class CarpoolPost(models.Model):
         ('riders', 'Riders Only'),
     ]
     
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
-    text = models.TextField()
+    author = models.ForeignKey(User, on_delete=models.CASCADE, max_length=100)
+    name = models.TextField(default="", blank=False)
+    dropoff = models.TextField(default="",blank=False)
+    pickup = models.TextField(default="", blank=False)
+    date = models.TextField(default="", blank=False)
+    notes = models.TextField(default="", blank=True)
+    pickup_time = models.TextField(default="", blank=False)
+    dropoff_time = models.TextField(default="", blank=False)
     image = models.ImageField(upload_to='carpool_posts/', blank=True, null=True)
     image_visibility = models.CharField(max_length=10, choices=VISIBILITY_CHOICES, default='all')
     created_at = models.DateTimeField(auto_now_add=True)
