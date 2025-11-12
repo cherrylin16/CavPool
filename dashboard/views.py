@@ -122,6 +122,9 @@ def create_carpool_post(request):
 def landing(request):
     return render(request, "dashboard/landing.html")
 
+def onboarding(request):
+    return render(request, "dashboard/onboarding.html")
+
 def moderator_dashboard(request):
     display_name = request.user.username
     return render(request, "dashboard/moderator_dashboard.html", {
