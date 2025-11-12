@@ -5,11 +5,13 @@ from accounts.models import RiderProfile, DriverProfile, User
 from .models import CarpoolPost
 from .forms import CarpoolPostForm
 from django.http import JsonResponse
-from .models import CarpoolPost, Flag
+from .models import CarpoolPost, Flag, Review
 from django.views.decorators.http import require_POST
-from django.db.models import Q
+from django.db.models import Q, Avg
+from django.db import models
 from ride_requests.models import RideRequest
 from datetime import datetime, date, time
+from accounts.models import DriverProfile
 
 def rider_dashboard(request):
     profile = None
@@ -201,6 +203,39 @@ def moderator_dashboard(request):
     })
 
 @login_required
+def user_analytics(request):
+    if not request.user.is_moderator:
+        return redirect('/')
+    
+    display_name = request.user.username
+    user_analytics = None
+    search_username = request.GET.get('search_user', '')
+    
+    if search_username:
+        try:
+            driver_profile = DriverProfile.objects.get(user__username__icontains=search_username)
+            user = driver_profile.user
+            reviews = Review.objects.filter(driver=user)
+            avg_rating = reviews.aggregate(avg=Avg('rating'))['avg']
+            recent_reviews = reviews[:5]
+            user_analytics = {
+                'user': user,
+                'avg_rating': round(avg_rating, 1) if avg_rating else 0,
+                'total_reviews': reviews.count(),
+                'recent_reviews': recent_reviews
+            }
+        except DriverProfile.DoesNotExist:
+            messages.error(request, f'Driver "{search_username}" not found.')
+        except DriverProfile.MultipleObjectsReturned:
+            messages.error(request, f'Multiple drivers found with username "{search_username}". Please be more specific.')
+    
+    return render(request, "dashboard/user_analytics.html", {
+        "display_name": display_name,
+        "user_analytics": user_analytics,
+        "search_username": search_username
+    })
+
+@login_required
 def flagged_posts(request):
     if not request.user.is_moderator:
         return redirect('/')
@@ -248,6 +283,31 @@ def flag_post(request, post_id):
         messages.success(request, "Post flagged successfully. Our moderators will review it soon.")
     else:
         messages.success(request, "Flag updated successfully. Our moderators will review it soon.")
+    
+    return redirect(request.META.get('HTTP_REFERER', '/'))
+
+@login_required
+@require_POST
+def submit_review(request, post_id):
+    post = get_object_or_404(CarpoolPost, id=post_id)
+    rating = request.POST.get('rating')
+    description = request.POST.get('description', '')
+    
+    if not rating or int(rating) < 1 or int(rating) > 5:
+        messages.error(request, 'Please provide a valid rating (1-5 stars).')
+        return redirect(request.META.get('HTTP_REFERER', '/'))
+    
+    review, created = Review.objects.get_or_create(
+        post=post,
+        reviewer=request.user,
+        driver=post.author,
+        defaults={'rating': int(rating), 'description': description}
+    )
+    
+    if created:
+        messages.success(request, 'Review submitted successfully!')
+    else:
+        messages.info(request, 'You have already reviewed this ride.')
     
     return redirect(request.META.get('HTTP_REFERER', '/'))
 
