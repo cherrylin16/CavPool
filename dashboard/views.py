@@ -21,8 +21,11 @@ def rider_dashboard(request):
         except RiderProfile.DoesNotExist:
             pass
 
-     # search queries
+     # search queries and filters
     query = request.GET.get('q', '')
+    date_filter = request.GET.get('date', '')
+    pickup_time_filter = request.GET.get('pickup_time', '')
+    dropoff_time_filter = request.GET.get('dropoff_time', '')
 
     posts = CarpoolPost.objects.filter(author__is_active=True)
 
@@ -37,6 +40,15 @@ def rider_dashboard(request):
             Q(name__icontains=query) |
             Q(author__username__icontains=query)
         ).distinct()
+    
+    if date_filter:
+        posts = posts.filter(date__icontains=date_filter)
+    
+    if pickup_time_filter:
+        posts = posts.filter(pickup_time__icontains=pickup_time_filter)
+    
+    if dropoff_time_filter:
+        posts = posts.filter(dropoff_time__icontains=dropoff_time_filter)
     
     flagged_posts = set(Flag.objects.filter(flagged_by=request.user).values_list('post_id', flat=True))
     
@@ -70,8 +82,11 @@ def driver_dashboard(request):
         except DriverProfile.DoesNotExist:
             pass
     
-    # search queries
+    # search queries and filters
     query = request.GET.get('q', '')
+    date_filter = request.GET.get('date', '')
+    pickup_time_filter = request.GET.get('pickup_time', '')
+    dropoff_time_filter = request.GET.get('dropoff_time', '')
 
     posts = CarpoolPost.objects.filter(author__is_active=True)
 
@@ -86,6 +101,15 @@ def driver_dashboard(request):
             Q(name__icontains=query) |
             Q(author__username__icontains=query)
         ).distinct()
+    
+    if date_filter:
+        posts = posts.filter(date__icontains=date_filter)
+    
+    if pickup_time_filter:
+        posts = posts.filter(pickup_time__icontains=pickup_time_filter)
+    
+    if dropoff_time_filter:
+        posts = posts.filter(dropoff_time__icontains=dropoff_time_filter)
 
 
     flagged_posts = set(Flag.objects.filter(flagged_by=request.user).values_list('post_id', flat=True))
