@@ -56,7 +56,7 @@
                                         <p class="card-text"><i>Date:</i> {{ post.date }}</p>
                                         <p class="card-text"><i>Pickup</i>: {{ post.pickup }} at {{ post.pickup_time }}</p>
                                         <p class="card-text"><i>Dropoff:</i> {{ post.dropoff }} at {{ post.dropoff_time }}</p>
-                                        <p class="card-text"><i>Description:</i> {{ post.notes }}</p>
+                                        <p class="card-text"><i>Description:</i> {{ post.notes|linebreaksbr }}</p>
                                         <h6 class="card-subtitle mb-2 text-muted">{% if not post.author.is_active %}[deleted]{% else %}{{ post.author.driverprofile.name|default:post.author.riderprofile.name|default:post.author.username }}{% endif %} - {{ post.created_at|date:"M d, Y" }}</h6>
                                         <p class="card-text">{{ post.text }}</p>
                                         {% if post.image %}
