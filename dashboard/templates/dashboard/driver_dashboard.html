@@ -55,7 +55,7 @@
             <div class="listings-filters-container mt-3 d-flex">
                 <div class="listings-box flex-grow-1 me-4">
                     <div class="row">
-                        {% for post in posts %}
+                        {% for post in active_posts %}
                             <div class="col-xl-4 col-lg-4 col-md-6 mb-3">
                                 <div class="card" style="height: 500px;">
                                     <div class="card-body d-flex flex-column">
@@ -108,10 +108,46 @@
                             </div>
                         {% empty %}
                             <div class="col-12">
-                                <p class="text-muted">No carpool posts yet. Create the first one!</p>
+                                <p class="text-muted">There are currently no active carpool posts.</p>
                             </div>
                         {% endfor %}
                     </div>
+                    
+                    {% if previous_posts %}
+                    <div class="mt-5">
+                        <h5>Previous Carpool Listings</h5>
+                        <div class="row">
+                            {% for post in previous_posts %}
+                                <div class="col-xl-4 col-lg-4 col-md-6 mb-3">
+                                    <div class="card" style="height: 500px; opacity: 0.7;">
+                                        <div class="card-body d-flex flex-column">
+                                            <h6 class="card-subtitle mb-3"><strong>{{post.name}}</strong></h6>
+                                            <p class="card-text"><i>Posted:</i> {{ post.created_at|date:"M d, Y" }} by {{ post.author.driverprofile.name|default:post.author.username }}</p>
+                                            <p class="card-text"><i>Date:</i> {{ post.date }}</p>
+                                            <p class="card-text"><i>Pickup</i>: {{ post.pickup }} at {{ post.pickup_time }}</p>
+                                            <p class="card-text"><i>Dropoff:</i> {{ post.dropoff }} at {{ post.dropoff_time }}</p>
+                                            <p class="card-text"><i>Description:</i> {{ post.notes }}</p>
+                                            {% if post.image %}
+                                                {% if post.image_visibility == 'all' or post.image_visibility == 'drivers' %}
+                                                    <div class="mb-3">
+                                                        <img src="{{ post.image.url }}" class="img-fluid" style="max-height: 150px; width: 100%; object-fit: cover; border-radius: 5px;">
+                                                    </div>
+                                                {% else %}
+                                                    <div class="mb-3">
+                                                        <p class="text-muted text-center"><em>Image visible to {{ post.get_image_visibility_display }}</em></p>
+                                                    </div>
+                                                {% endif %}
+                                            {% endif %}
+                                            <div class="d-flex justify-content-end align-items-center mt-auto gap-2">
+                                                <span class="btn btn-sm btn-secondary" disabled>Trip Completed</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
                 </div>
 
                 <div class="filters-box" style="width: 200px; flex-shrink: 0;">
