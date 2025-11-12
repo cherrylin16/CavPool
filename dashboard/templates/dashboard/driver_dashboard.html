@@ -80,6 +80,7 @@
                                         <div class="d-flex justify-content-end align-items-center mt-auto gap-2">
                                             {% if post.author == request.user %}
                                                 <a href="{% url 'ride_requests:manage_requests' post.id %}" class="btn btn-sm btn-info">Manage Requests</a>
+                                                <a href="{% url 'edit_own_carpool_post' post.id %}" class="btn btn-warning btn-sm">Edit</a>
                                                 <button class="btn btn-sm btn-danger"
                                                     data-bs-toggle="modal"
                                                     data-bs-target="#deletePostModal"
