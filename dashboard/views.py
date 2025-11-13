@@ -277,3 +277,43 @@ def ban_user(request):
         'has_rider_profile': has_rider_profile,
         'user_type_display': user_type_display,
     })
+
+@login_required
+def edit_carpool_post(request, post_id):
+    if not request.user.is_moderator:
+        return redirect('/')
+
+    post = get_object_or_404(CarpoolPost, id=post_id)
+
+    if request.method == "POST":
+        form = CarpoolPostForm(request.POST, request.FILES, instance=post)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Post updated successfully.")
+            return redirect('flagged_posts')
+    else:
+        form = CarpoolPostForm(instance=post)
+
+    return render(request, "dashboard/edit_post.html", {
+        "form": form,
+        "post": post
+    })
+
+@login_required
+def edit_own_carpool_post(request, post_id):
+    # Get the post, but make sure the logged-in user is the author
+    post = get_object_or_404(CarpoolPost, id=post_id, author=request.user)
+
+    if request.method == "POST":
+        form = CarpoolPostForm(request.POST, request.FILES, instance=post)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Your post has been updated.")
+            return redirect('driver dashboard')
+    else:
+        form = CarpoolPostForm(instance=post)
+
+    return render(request, "dashboard/edit_own_post.html", {
+        "form": form,
+        "post": post
+    })

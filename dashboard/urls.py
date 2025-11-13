@@ -10,5 +10,7 @@ urlpatterns = [
     path('moderator/ban-user/', views.ban_user, name='ban_user'),
     path("create-post/", views.create_carpool_post, name="create_carpool_post"),
     path('flag-post/<int:post_id>/', views.flag_post, name='flag_post'),
+    path('moderator/edit-post/<int:post_id>/', views.edit_carpool_post, name='edit_carpool_post'),
+    path('edit-post/<int:post_id>/', views.edit_own_carpool_post, name='edit_own_carpool_post'),
     path("", views.landing, name="landing")
 ]
