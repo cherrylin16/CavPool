@@ -26,8 +26,7 @@
             <div class="d-grid gap-3 col-6 mx-auto">
                 <a href="{% url 'flagged_posts' %}" class="btn btn-moderator">Approve Posts</a>
                 <a href="{% url 'ban_user' %}" class="btn btn-moderator">Ban User</a>
-                <button class="btn btn-moderator">View Reports</button>
-                <button class="btn btn-moderator">Analytics</button>
+                <a href="{% url 'user_analytics' %}" class="btn btn-moderator">View Reports</a>
             </div>
         </div>
     </div>
@@ -39,8 +38,10 @@
 
     <div class="side-panel">
         <div class="d-grid gap-2">
-            <a href="#" class="btn btn-moderator btn-lg btn-block py-2">Moderation Home</a>
-            <a href="#" class="btn btn-moderator btn-lg btn-block py-2">User Management</a>
+            <a href="{% url 'moderator_dashboard' %}" class="btn btn-moderator btn-lg btn-block py-2">Moderation Home</a>
+            <a href="{% url 'flagged_posts' %}" class="btn btn-moderator btn-lg btn-block py-2">Flagged Posts</a>
+            <a href="{% url 'ban_user' %}" class="btn btn-moderator btn-lg btn-block py-2">Ban User</a>
+            <a href="{% url 'user_analytics' %}" class="btn btn-moderator btn-lg btn-block py-2">User Analytics</a>
             <a href="{% url 'account_logout' %}" class="btn btn-moderator btn-lg btn-block py-2">Log Out</a>
         </div>
     </div>
