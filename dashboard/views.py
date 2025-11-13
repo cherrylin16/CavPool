@@ -9,6 +9,7 @@ from .models import CarpoolPost, Flag
 from django.views.decorators.http import require_POST
 from django.db.models import Q
 from ride_requests.models import RideRequest
+from datetime import datetime, date, time
 
 def rider_dashboard(request):
     profile = None
@@ -21,8 +22,11 @@ def rider_dashboard(request):
         except RiderProfile.DoesNotExist:
             pass
 
-     # search queries
+     # search queries and filters
     query = request.GET.get('q', '')
+    date_filter = request.GET.get('date', '')
+    pickup_time_filter = request.GET.get('pickup_time', '')
+    dropoff_time_filter = request.GET.get('dropoff_time', '')
 
     posts = CarpoolPost.objects.filter(author__is_active=True)
 
@@ -38,6 +42,38 @@ def rider_dashboard(request):
             Q(author__username__icontains=query)
         ).distinct()
     
+    if date_filter:
+        posts = posts.filter(date__icontains=date_filter)
+    
+    if pickup_time_filter:
+        posts = posts.filter(pickup_time__icontains=pickup_time_filter)
+    
+    if dropoff_time_filter:
+        posts = posts.filter(dropoff_time__icontains=dropoff_time_filter)
+    
+    # Separate active and previous posts
+    now = datetime.now()
+    current_date = now.date()
+    current_time = now.time()
+    
+    active_posts = []
+    previous_posts = []
+    
+    for post in posts:
+        try:
+            # Parse date and time from post
+            post_date = datetime.strptime(post.date, '%Y-%m-%d').date()
+            post_time = datetime.strptime(post.pickup_time, '%H:%M').time()
+            
+            # Check if post is in the future
+            if post_date > current_date or (post_date == current_date and post_time > current_time):
+                active_posts.append(post)
+            else:
+                previous_posts.append(post)
+        except (ValueError, TypeError):
+            # If date/time parsing fails, treat as active
+            active_posts.append(post)
+    
     flagged_posts = set(Flag.objects.filter(flagged_by=request.user).values_list('post_id', flat=True))
     
     # Get user's ride requests and add them to posts
@@ -48,12 +84,13 @@ def rider_dashboard(request):
         request_dict = {req.post_id: req for req in user_ride_requests}
         
         # Add request object to each post
-        for post in posts:
+        for post in active_posts + previous_posts:
             post.user_request = request_dict.get(post.id)
     
     return render(request, "dashboard/rider_dashboard.html", {
         'display_name': display_name,
-        'posts': posts,
+        'active_posts': active_posts,
+        'previous_posts': previous_posts,
         'query': query,
         'flagged_posts': flagged_posts,
         'user_requests': user_requests
@@ -70,8 +107,11 @@ def driver_dashboard(request):
         except DriverProfile.DoesNotExist:
             pass
     
-    # search queries
+    # search queries and filters
     query = request.GET.get('q', '')
+    date_filter = request.GET.get('date', '')
+    pickup_time_filter = request.GET.get('pickup_time', '')
+    dropoff_time_filter = request.GET.get('dropoff_time', '')
 
     posts = CarpoolPost.objects.filter(author__is_active=True)
 
@@ -86,13 +126,45 @@ def driver_dashboard(request):
             Q(name__icontains=query) |
             Q(author__username__icontains=query)
         ).distinct()
+    
+    if date_filter:
+        posts = posts.filter(date__icontains=date_filter)
+    
+    if pickup_time_filter:
+        posts = posts.filter(pickup_time__icontains=pickup_time_filter)
+    
+    if dropoff_time_filter:
+        posts = posts.filter(dropoff_time__icontains=dropoff_time_filter)
 
+    # Separate active and previous posts
+    now = datetime.now()
+    current_date = now.date()
+    current_time = now.time()
+    
+    active_posts = []
+    previous_posts = []
+    
+    for post in posts:
+        try:
+            # Parse date and time from post
+            post_date = datetime.strptime(post.date, '%Y-%m-%d').date()
+            post_time = datetime.strptime(post.pickup_time, '%H:%M').time()
+            
+            # Check if post is in the future
+            if post_date > current_date or (post_date == current_date and post_time > current_time):
+                active_posts.append(post)
+            else:
+                previous_posts.append(post)
+        except (ValueError, TypeError):
+            # If date/time parsing fails, treat as active
+            active_posts.append(post)
 
     flagged_posts = set(Flag.objects.filter(flagged_by=request.user).values_list('post_id', flat=True))
     form = CarpoolPostForm()
     return render(request, "dashboard/driver_dashboard.html", {
         'display_name': display_name, 
-        'posts': posts, 
+        'active_posts': active_posts,
+        'previous_posts': previous_posts,
         'query': query,
         'form': form,
         'flagged_posts': flagged_posts
