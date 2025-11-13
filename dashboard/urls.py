@@ -12,5 +12,6 @@ urlpatterns = [
     path('flag-post/<int:post_id>/', views.flag_post, name='flag_post'),
     path('moderator/edit-post/<int:post_id>/', views.edit_carpool_post, name='edit_carpool_post'),
     path('edit-post/<int:post_id>/', views.edit_own_carpool_post, name='edit_own_carpool_post'),
+    path('onboarding/', views.onboarding, name='onboarding'),
     path("", views.landing, name="landing")
 ]
