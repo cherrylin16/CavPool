@@ -85,6 +85,12 @@
       messageElement.textContent = data.message;
       chatLog.appendChild(messageElement);
       chatLog.scrollTop = chatLog.scrollHeight;
+
+      if (data.sender !== "{{ request.user.username }}") {
+        if (typeof showMessageBadge === "function") {
+          showMessageBadge();
+        }
+      }
     };
 
     let websocketConnected = true;
