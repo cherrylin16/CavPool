@@ -71,5 +71,18 @@
     });
 </script>
 
+<script>
+    const notifSocket = new WebSocket(
+        `ws://${window.location.host}/ws/notifications/`
+    );
+    
+    notifSocket.onmessage = function(e) {
+        const data = JSON.parse(e.data);
+        if (data.notification === true) {
+            showMessageBadge();
+        }
+    };
+    </script>
+
 </body>
 </html>

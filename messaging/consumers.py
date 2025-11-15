@@ -35,6 +35,13 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 "sender": sender.username,
             },
         )
+        await self.channel_layer.group_send(
+            f"notify_{receiver.id}",
+            {
+                "type": "notify",
+                "from": sender.username,
+            }
+)
 
     async def chat_message(self, event):
         await self.send(text_data=json.dumps({
