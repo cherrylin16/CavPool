@@ -66,6 +66,12 @@ def message_detail(request, user_id):
         receiver__in=[request.user, other_user]
     ).order_by('timestamp')
 
+    Message.objects.filter(
+        sender=other_user,
+        receiver=request.user,
+        is_read=False
+    ).update(is_read=True)
+
     return render(request, "messaging/message_detail.html", {
         "other_user": other_user,
         "messages": messages_qs
