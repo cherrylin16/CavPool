@@ -318,5 +318,22 @@
             });
         });
     </script>
+
+<script>
+    function showMessageBadge() {
+        const badge = document.getElementById("msg-badge");
+        if (badge) badge.style.display = "flex";
+    }
+    document.addEventListener("DOMContentLoaded", function () {
+        const toggle = document.querySelector(".side-panel-toggle");
+        if (toggle) {
+            toggle.addEventListener("click", () => {
+                const badge = document.getElementById("msg-badge");
+                if (badge) badge.style.display = "none";
+            });
+        }
+    });
+</script>
+
 </body>
 </html>
