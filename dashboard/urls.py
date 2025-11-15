@@ -15,5 +15,5 @@ urlpatterns = [
     path('edit-post/<int:post_id>/', views.edit_own_carpool_post, name='edit_own_carpool_post'),
     path('onboarding/', views.onboarding, name='onboarding'),
     path('submit-review/<int:post_id>/', views.submit_review, name='submit_review'),
-    path("", views.landing, name="landing")
+    path("landing/", views.landing, name="landing")
 ]

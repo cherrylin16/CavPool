@@ -336,17 +336,32 @@
 </script>
 
 <script>
-    const notifSocket = new WebSocket(
-        `ws://${window.location.host}/ws/notifications/`
-    );
-    
-    notifSocket.onmessage = function(e) {
-        const data = JSON.parse(e.data);
-        if (data.notification === true) {
-            showMessageBadge();
+    async function checkUnreadMessages() {
+        try {
+            const response = await fetch("/messages/unread-count/", {
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest"
+                }
+            });
+            if (!response.ok) return;
+            const data = await response.json();
+            const badge = document.getElementById("msg-badge");
+            if (!badge) return;
+
+            if (data.unread && data.unread > 0) {
+                badge.style.display = "flex";
+            } else {
+                badge.style.display = "none";
+            }
+        } catch (e) {
+            console.error("Error checking unread messages:", e);
         }
-    };
-    </script>
+    }
+    document.addEventListener("DOMContentLoaded", function () {
+        checkUnreadMessages();
+        setInterval(checkUnreadMessages, 10000);
+    });
+</script>
 
 </body>
 </html>

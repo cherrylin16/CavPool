@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 from .models import Message
+from django.http import JsonResponse
 
 User = get_user_model()
 
@@ -41,6 +42,10 @@ def message_list(request):
     
     return render(request, "messaging/message_list.html", {"conversations": conversation_data})
 
+@login_required
+def unread_count(request):
+    count = Message.objects.filter(receiver=request.user, is_read=False).count()
+    return JsonResponse({"unread": count})
 
 @login_required
 def message_detail(request, user_id):
