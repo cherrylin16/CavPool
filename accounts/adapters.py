@@ -5,8 +5,8 @@ class MySocialAccountAdapter(DefaultSocialAccountAdapter):
     def populate_username(self, request, user):
         if hasattr(user, 'socialaccount_set'):
             for account in user.socialaccount_set.all():
-                if account.provider == 'google' and account.extra_data.get('name'):
-                    return account.extra_data['name'].title()
+                if account.provider == 'google' and account.extra_data.get('email'):
+                    return account.extra_data['email']
         return super().populate_username(request, user)
     
     def pre_social_login(self, request, sociallogin):
@@ -17,7 +17,7 @@ class MySocialAccountAdapter(DefaultSocialAccountAdapter):
             
             if sociallogin.account.extra_data.get('name'):
                 full_name = sociallogin.account.extra_data['name'].title()
-                user.username = full_name
+                user.first_name = full_name
             
             if user.email and user.email.lower() in [e.lower() for e in settings.MODERATOR_EMAILS]:
                 user.is_moderator = True
@@ -28,12 +28,14 @@ class MySocialAccountAdapter(DefaultSocialAccountAdapter):
             user.save()
     
     def save_user(self, request, sociallogin, form=None):
-        if sociallogin.account.extra_data.get('name'):
-            full_name = sociallogin.account.extra_data['name'].title()
-            sociallogin.user.username = full_name
+        if sociallogin.account.extra_data.get('email'):
+            sociallogin.user.username = sociallogin.account.extra_data['email']
         
         user = super().save_user(request, sociallogin, form)
         role = request.session.get('role_intent', None)
+        
+        if sociallogin.account.extra_data.get('name'):
+            user.first_name = sociallogin.account.extra_data['name'].title()
         
         if user.email and user.email.lower() in [e.lower() for e in settings.MODERATOR_EMAILS]:
             user.is_moderator = True
