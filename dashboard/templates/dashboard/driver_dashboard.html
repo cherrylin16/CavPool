@@ -412,7 +412,19 @@
         checkRideRequests();
         setInterval(checkRideRequests, 8000);
     });
-    </script>
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const toggle = document.querySelector(".side-panel-toggle");
+        if (toggle) {
+            toggle.addEventListener("click", () => {
+                const reqBadge = document.getElementById("request-badge");
+                if (reqBadge) reqBadge.style.display = "none";
+            });
+        }
+    });
+</script>
 
 </body>
 </html>
