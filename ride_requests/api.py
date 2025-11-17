@@ -15,7 +15,7 @@ def driver_unseen_requests(request):
         status='pending'
     ).count()
 
-    return JsonResponse({"unseen_requests": unseen})
+    return JsonResponse({"unseen": unseen})
 
 
 @login_required
@@ -29,4 +29,4 @@ def rider_unseen_approvals(request):
         status='approved'
     ).count()
     
-    return JsonResponse({"unseen_approvals": unseen})
+    return JsonResponse({"unseen": unseen})
