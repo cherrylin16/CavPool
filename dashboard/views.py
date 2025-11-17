@@ -332,6 +332,7 @@ def get_driver_info(request, user_id):
             'computing_id': driver_profile.computing_id,
             'gender': driver_profile.get_gender_display(),
             'class_year': driver_profile.class_year,
+            'photo': driver_profile.profile_picture.url if driver_profile.profile_picture else None
         }
         return JsonResponse(data)
     except DriverProfile.DoesNotExist:

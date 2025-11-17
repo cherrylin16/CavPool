@@ -359,10 +359,15 @@
                     .then(response => response.json())
                     .then(data => {
                         content.innerHTML = `
+                            <div class="text-center mb-3">
+                                ${data.photo ? `<img src="${data.photo}" class="img-fluid rounded" style="max-height: 130px; object-fit: cover;">`
+                                : `<p class="text-muted">No photo available</p>`}
+                            </div>
                             <p><strong>Name:</strong> ${data.name || 'Not provided'}</p>
                             <p><strong>Computing ID:</strong> ${data.computing_id || 'Not provided'}</p>
                             <p><strong>Gender:</strong> ${data.gender || 'Not provided'}</p>
                             <p><strong>Class Year:</strong> ${data.class_year || 'Not provided'}</p>
+                            
                         `;
                     })
                     .catch(error => {
