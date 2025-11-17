@@ -181,6 +181,7 @@
 
         <button class="side-panel-toggle" type="button">
         <span id="msg-badge" class="notification-badge" style="display:none;">●</span>
+        <span id="request-badge" class="notification-badge" style="display:none; background:red; margin-right:5px;">●</span>
         <span class="material-symbols-outlined sp-icon-open" style="font-size:48px;">menu</span>
         <span class="material-symbols-outlined sp-icon-close" style="font-size:48px;">menu</span>
         </button>
@@ -385,6 +386,33 @@
         setInterval(checkUnreadMessages, 10000);
     });
 </script>
+
+<script>
+    async function checkRideRequests() {
+        try {
+            const response = await fetch("/ride-requests/unseen-requests/", {
+                headers: { "X-Requested-With": "XMLHttpRequest" }
+            });
+            if (!response.ok) return;
+            const data = await response.json();
+            const badge = document.getElementById("request-badge");
+            if (!badge) return;
+    
+            if (data.unseen_requests > 0) {
+                badge.style.display = "flex";
+            } else {
+                badge.style.display = "none";
+            }
+        } catch (e) {
+            console.error("Error checking ride requests:", e);
+        }
+    }
+    
+    document.addEventListener("DOMContentLoaded", function () {
+        checkRideRequests();
+        setInterval(checkRideRequests, 8000);
+    });
+    </script>
 
 </body>
 </html>

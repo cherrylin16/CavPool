@@ -17,6 +17,9 @@ class RideRequest(models.Model):
     message = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    is_seen_by_driver = models.BooleanField(default=False)
+    is_seen_by_rider = models.BooleanField(default=True)  
     
     class Meta:
         unique_together = ('post', 'rider')  # Prevent duplicate requests
