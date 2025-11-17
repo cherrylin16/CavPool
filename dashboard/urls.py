@@ -16,6 +16,7 @@ urlpatterns = [
     path('edit-post/<int:post_id>/', views.edit_own_carpool_post, name='edit_own_carpool_post'),
     path('onboarding/', views.onboarding, name='onboarding'),
     path('submit-review/<int:post_id>/', views.submit_review, name='submit_review'),
+    path('get-driver-info/<int:user_id>/', views.get_driver_info, name='get_driver_info'),
     path("landing/", views.landing, name="landing"),
     path("driver/<int:driver_id>/info/", view_driver_profile, name="view_driver_info"),
 

@@ -323,6 +323,21 @@ def submit_review(request, post_id):
     return redirect(request.META.get('HTTP_REFERER', '/'))
 
 @login_required
+def get_driver_info(request, user_id):
+    try:
+        from accounts.models import DriverProfile
+        driver_profile = DriverProfile.objects.get(user_id=user_id)
+        data = {
+            'name': driver_profile.name,
+            'computing_id': driver_profile.computing_id,
+            'gender': driver_profile.get_gender_display(),
+            'class_year': driver_profile.class_year,
+        }
+        return JsonResponse(data)
+    except DriverProfile.DoesNotExist:
+        return JsonResponse({'error': 'Driver profile not found'}, status=404)
+
+@login_required
 def ban_user(request):
     if not request.user.is_moderator:
         return redirect('/')

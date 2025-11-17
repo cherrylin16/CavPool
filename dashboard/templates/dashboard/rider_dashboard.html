@@ -267,11 +267,8 @@
                 <form method="post" action="" id="postId">
                     {% csrf_token %}
                     <div class="modal-body">
-                        <div class="mb-3">
-                            <p>Name: {{ post.author.driverprofile.name }}</p>
-                            <p>Computing ID: {{ post.author.driverprofile.computing_id|default:"Not provided" }}</p>
-                            <p>Gender: {{ post.author.driverprofile.get_gender_display|default:"Not provided" }} </p>
-                            <p>Class Year: {{ post.author.driverprofile.class_year|default:"Not provided" }} </p>
+                        <div class="mb-3" id="driver-info-content">
+                            <p>Loading driver information...</p>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -350,6 +347,27 @@
                 document.querySelectorAll('input[name="rating"]').forEach(input => {
                     input.checked = false;
                 });
+            });
+            
+            var driverInfoModal = document.getElementById('viewDriverInfoModal');
+            driverInfoModal.addEventListener('show.bs.modal', function (event) {
+                var button = event.relatedTarget;
+                var authorId = button.getAttribute('data-author-id');
+                var content = document.getElementById('driver-info-content');
+                
+                fetch('/get-driver-info/' + authorId + '/')
+                    .then(response => response.json())
+                    .then(data => {
+                        content.innerHTML = `
+                            <p><strong>Name:</strong> ${data.name || 'Not provided'}</p>
+                            <p><strong>Computing ID:</strong> ${data.computing_id || 'Not provided'}</p>
+                            <p><strong>Gender:</strong> ${data.gender || 'Not provided'}</p>
+                            <p><strong>Class Year:</strong> ${data.class_year || 'Not provided'}</p>
+                        `;
+                    })
+                    .catch(error => {
+                        content.innerHTML = '<p>Error loading driver information.</p>';
+                    });
             });
         });
     </script>
