@@ -62,7 +62,7 @@
                     <div class="row">
                         {% for post in active_posts %}
                             <div class="col-xl-4 col-lg-4 col-md-6 mb-3">
-                                <div class="card" style="height: 500px;">
+                                <div class="card" style="height: 550px;">
                                     <div class="card-body d-flex flex-column">
                                         <h6 class="card-subtitle mb-3"><strong>{{post.name}}</strong></h6>
                                         <p class="card-text"><i>Posted:</i> {{ post.created_at|date:"M d, Y" }} by {{ post.author.driverprofile.name|default:post.author.username }}</p>
@@ -70,7 +70,6 @@
                                         <p class="card-text"><i>Pickup</i>: {{ post.pickup }} at {{ post.pickup_time }}</p>
                                         <p class="card-text"><i>Dropoff:</i> {{ post.dropoff }} at {{ post.dropoff_time }}</p>
                                         <p class="card-text"><i>Description:</i> {{ post.notes|linebreaksbr }}</p>
-                                        <h6 class="card-subtitle mb-2 text-muted">{% if not post.author.is_active %}[deleted]{% else %}{{ post.author.driverprofile.name|default:post.author.riderprofile.name|default:post.author.username }}{% endif %} - {{ post.created_at|date:"M d, Y" }}</h6>
                                         <p class="card-text">{{ post.text }}</p>
                                         {% if post.image %}
                                             {% if post.image_visibility == 'all' or post.image_visibility == 'riders' %}
@@ -101,6 +100,16 @@
                                                     <button type="submit" class="btn btn-sm btn-success">Request Ride</button>
                                                 </form>
                                             {% endif %}
+
+                                        
+                                            <button class="btn btn-sm btn-primary"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#viewDriverInfoModal"
+                                                    data-author-id="{{ post.author.id }}">
+                                                    <i class="material-icons" style="font-size: 16px;"></i> View Driver Info
+                                            </button>
+
+                                
                                             {% if post.id in flagged_posts %}
                                                 <button class="btn btn-sm btn-warning"
                                                     data-bs-toggle="modal"
@@ -133,7 +142,7 @@
                         <div class="row">
                             {% for post in previous_posts %}
                                 <div class="col-xl-4 col-lg-4 col-md-6 mb-3">
-                                    <div class="card" style="height: 500px; opacity: 0.7;">
+                                    <div class="card" style="height: 550px; opacity: 0.7;">
                                         <div class="card-body d-flex flex-column">
                                             <h6 class="card-subtitle mb-3"><strong>{{post.name}}</strong></h6>
                                             <p class="card-text"><i>Posted:</i> {{ post.created_at|date:"M d, Y" }} by {{ post.author.driverprofile.name|default:post.author.username }}</p>
@@ -242,6 +251,32 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                         <button type="submit" class="btn btn-warning">Flag Post</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="viewDriverInfoModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">View Driver's Information</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form method="post" action="" id="postId">
+                    {% csrf_token %}
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <p>Name: {{ post.author.driverprofile.name }}</p>
+                            <p>Computing ID: {{ post.author.driverprofile.computing_id|default:"Not provided" }}</p>
+                            <p>Gender: {{ post.author.driverprofile.get_gender_display|default:"Not provided" }} </p>
+                            <p>Class Year: {{ post.author.driverprofile.class_year|default:"Not provided" }} </p>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <a href="{% url 'message_list' %}" class="btn btn-primary">Contact Driver</a>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     </div>
                 </form>
             </div>

@@ -12,6 +12,7 @@ from django.db import models
 from ride_requests.models import RideRequest
 from datetime import datetime, date, time
 from accounts.models import DriverProfile
+from accounts.forms import DriverProfileForm
 
 def rider_dashboard(request):
     profile = None
@@ -96,6 +97,13 @@ def rider_dashboard(request):
         'query': query,
         'flagged_posts': flagged_posts,
         'user_requests': user_requests
+    })
+
+def view_driver_profile(request):
+    profile = get_object_or_404(DriverProfile, user_id=driver_id)
+
+    return render(request, "dashboard/rider_dashboard.html", {
+        'profile': profile
     })
 
 def driver_dashboard(request):
