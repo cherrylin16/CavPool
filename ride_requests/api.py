@@ -13,9 +13,11 @@ def driver_unseen_requests(request):
         post__author=request.user,
         is_seen_by_driver=False,
         status='pending'
-    ).count()
+    )
 
-    return JsonResponse({"unseen": unseen})
+    post_ids = list(unseen.values_list('post_id', flat=True))
+
+    return JsonResponse({"post_ids": post_ids})
 
 
 @login_required
@@ -27,6 +29,8 @@ def rider_unseen_approvals(request):
         rider=request.user,
         is_seen_by_rider=False,
         status='approved'
-    ).count()
-    
-    return JsonResponse({"unseen": unseen})
+    )
+
+    post_ids = list(unseen.values_list('post_id', flat=True))
+
+    return JsonResponse({"post_ids": post_ids})

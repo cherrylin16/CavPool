@@ -33,20 +33,22 @@ body {
     width: 57px;
     height: 55px;
     flex-shrink: 0;
-    display: grid;
-    place-items: center;
+    /* display: grid;
+       place-items: center; */
 
-    color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    position: fixed;        
+    top: 0;
+    right: 0;
     background: #37518C;
+    color: white;
     border: none;
     border-radius: 6px 0 0 6px;
-    outline: none;
     cursor: pointer;
-    transition: right 0.3s ease;
-    position: fixed;
     z-index: 2000;
-    top: 0;
-    right:0;
 }
 
 .side-panel-toggle:hover{
@@ -191,4 +193,21 @@ body {
     font-size: 10px;
     font-weight: bold;
     z-index: 3000;
+}
+
+.post-notification-badge {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 14px;
+    height: 14px;
+    background-color: red;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 10px;
+    font-weight: bold;
+    z-index: 5000;
 }
