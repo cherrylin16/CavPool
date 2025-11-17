@@ -21,7 +21,7 @@ def request_ride(request, post_id):
         post=post,
         rider=request.user,
         defaults={
-        'message': message
+        'message': message,
         'is_seen_by_driver': False,
         'is_seen_by_rider': True}
     )
