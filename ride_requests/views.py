@@ -1,11 +1,12 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from accounts.decorators import verified_required
 from django.views.decorators.http import require_POST
 from dashboard.models import CarpoolPost
 from .models import RideRequest
 
-@login_required
+@verified_required
 @require_POST
 def request_ride(request, post_id):
     post = get_object_or_404(CarpoolPost, id=post_id)
@@ -30,7 +31,7 @@ def request_ride(request, post_id):
     
     return redirect(request.META.get('HTTP_REFERER', '/'))
 
-@login_required
+@verified_required
 def manage_requests(request, post_id):
     post = get_object_or_404(CarpoolPost, id=post_id, author=request.user)
     requests = RideRequest.objects.filter(post=post, rider__is_active=True)
@@ -40,7 +41,7 @@ def manage_requests(request, post_id):
         'requests': requests,
     })
 
-@login_required
+@verified_required
 @require_POST
 def update_request_status(request, request_id):
     ride_request = get_object_or_404(RideRequest, id=request_id, post__author=request.user)
@@ -53,7 +54,7 @@ def update_request_status(request, request_id):
     
     return redirect('ride_requests:manage_requests', post_id=ride_request.post.id)
 
-@login_required
+@verified_required
 @require_POST
 def cancel_request(request, request_id):
     ride_request = get_object_or_404(RideRequest, id=request_id, rider=request.user)

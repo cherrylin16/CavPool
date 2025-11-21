@@ -1,10 +1,11 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from accounts.decorators import verified_required
 from accounts.models import DriverProfile
 from accounts.forms import DriverProfileForm
 
-@login_required
+@verified_required
 def driver_profile(request):
     profile, created = DriverProfile.objects.get_or_create(user=request.user)
     

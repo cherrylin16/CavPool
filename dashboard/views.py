@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from accounts.decorators import verified_required
 from accounts.models import RiderProfile, DriverProfile, User
 from .models import CarpoolPost
 from .forms import CarpoolPostForm
@@ -14,6 +15,7 @@ from datetime import datetime, date, time
 from accounts.models import DriverProfile
 from accounts.forms import DriverProfileForm
 
+@verified_required
 def rider_dashboard(request):
     profile = None
     display_name = request.user.username
@@ -106,6 +108,7 @@ def view_driver_profile(request):
         'profile': profile
     })
 
+@verified_required
 def driver_dashboard(request):
     profile = None
     display_name = request.user.username
@@ -180,7 +183,7 @@ def driver_dashboard(request):
         'flagged_posts': flagged_posts
     })
 
-@login_required
+@verified_required
 def create_carpool_post(request):
     if request.method == 'POST':
         # Handle deletion
