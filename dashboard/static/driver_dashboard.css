@@ -48,6 +48,7 @@ body {
     background: #98b2e6;
     color: white;
     border: none;
+    transition: right 0.3s ease;
     border-radius: 6px 0 0 6px;
     cursor: pointer;
     z-index: 2000;
