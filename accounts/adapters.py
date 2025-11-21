@@ -25,6 +25,8 @@ class MySocialAccountAdapter(DefaultSocialAccountAdapter):
             else:
                 if role in ['driver', 'rider']:
                     user.user_type = role
+                    # Store login type for verification redirect
+                    request.session['login_type'] = role
             user.save()
     
     def save_user(self, request, sociallogin, form=None):
@@ -43,6 +45,8 @@ class MySocialAccountAdapter(DefaultSocialAccountAdapter):
         else:
             if role in ['driver', 'rider']:
                 user.user_type = role
+                # Store login type for verification redirect
+                request.session['login_type'] = role
         
         user.save()
         if 'role_intent' in request.session:
