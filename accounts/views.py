@@ -282,14 +282,17 @@ def verify_email(request, token):
         user.verification_token = ''  # Clear the token
         user.save()
         
-        # Update profile with computing ID
         if user.user_type == 'driver':
             profile, created = DriverProfile.objects.get_or_create(user=user)
             profile.computing_id = user.computing_id
+            if user.first_name and not profile.name:
+                profile.name = user.first_name
             profile.save()
         elif user.user_type == 'rider':
             profile, created = RiderProfile.objects.get_or_create(user=user)
             profile.computing_id = user.computing_id
+            if user.first_name and not profile.name:
+                profile.name = user.first_name
             profile.save()
         
         messages.success(request, 'Your account has been verified successfully!')
