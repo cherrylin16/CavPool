@@ -11,4 +11,6 @@ urlpatterns = [
     path('social/start/<str:role>/', views.start_social_login, name='start_social_login'),
     path('login-redirect/', views.login_redirect, name='login_redirect'),
     path('delete-account/', views.delete_account, name='delete_account'),
+    path('verification/', views.verification, name='verification'),
+    path('verify/<str:token>/', views.verify_email, name='verify_email'),
 ]

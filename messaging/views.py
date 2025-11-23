@@ -2,12 +2,13 @@ from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
+from accounts.decorators import verified_required
 from .models import Message
 from django.http import JsonResponse
 
 User = get_user_model()
 
-@login_required
+@verified_required
 def message_list(request):
     from django.db.models import Q, Max
     
@@ -47,7 +48,7 @@ def unread_count(request):
     count = Message.objects.filter(receiver=request.user, is_read=False).count()
     return JsonResponse({"unread": count})
 
-@login_required
+@verified_required
 def message_detail(request, user_id):
     other_user = get_object_or_404(User, id=user_id)
 
@@ -78,7 +79,7 @@ def message_detail(request, user_id):
     })
 
 
-@login_required
+@verified_required
 def new_message(request):
     if request.method == "POST":
         username = request.POST.get("username")
