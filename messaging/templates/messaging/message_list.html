@@ -11,7 +11,11 @@
     integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
     crossorigin="anonymous">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <link rel="stylesheet" href="{% static 'rider_dashboard.css' %}">
+  {% if request.user.user_type == 'driver' %}
+    <link rel="stylesheet" href="{% static 'driver_dashboard.css' %}">
+  {% else %}
+    <link rel="stylesheet" href="{% static 'rider_dashboard.css' %}">
+  {% endif %}
   <link rel="stylesheet" href="{% static 'message_list.css' %}">
   <title>Messages</title>
 </head>
