@@ -57,20 +57,15 @@
 
     <div class="side-panel">
       <div class="d-grid gap-2">
-        {% if request.user.is_authenticated %}
-          {% if request.user.user_type == 'driver' %}
-            <a href="/driver/" class="btn btn-primary btn-lg btn-block" style="margin-top: 5px;">Driver Dashboard</a>
-          {% else %}
-            <a href="/rider/" class="btn btn-primary btn-lg btn-block" style="margin-top: 5px;">Rider Dashboard</a>
-          {% endif %}
+        {% if request.user.user_type == 'driver' %}
+          <a href="{% url 'driver dashboard' %}" class="btn btn-primary btn-lg btn-block" style="margin-top: 5px;">Driver Dashboard</a>
+          <a href="{% url 'driver_profile' %}" class="btn btn-primary btn-block btn-lg py-2" style="margin-top: 5px">Driver Profile</a>
+        {% else %}
+          <a href="{% url 'rider dashboard' %}" class="btn btn-primary btn-lg btn-block" style="margin-top: 5px;">Rider Dashboard</a>
+          <a href="{% url 'rider_profile' %}" class="btn btn-primary btn-block btn-lg py-2" style="margin-top: 5px">Rider Profile</a>
         {% endif %}
-
-        <a href="{% url 'message_list' %}" 
-           class="btn btn-primary btn-block btn-lg py-2" 
-           style="margin-top: 5px; background-color: #0d6efd;">Messaging</a>
-
-        <a href="#" class="btn btn-primary btn-block btn-lg py-2" style="margin-top: 5px;">History</a>
-        <a href="{% url 'account_logout' %}" class="btn btn-primary btn-block btn-lg py-2" style="margin-top: 5px;">Log Out</a>
+        <a href="{% url 'message_list' %}" class="btn btn-primary btn-block btn-lg py-2" style="margin-top: 5px">Messaging</a>
+        <a href="{% url 'account_logout' %}" class="btn btn-primary btn-block btn-lg py-2" style="margin-top: 5px">Log Out</a>
       </div>
     </div>
   </div>
