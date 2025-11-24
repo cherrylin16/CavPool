@@ -194,7 +194,7 @@ def delete_account(request):
         
         # Update user_type and handle logout
         if not has_driver and not has_rider:
-            user.username = "[deleted]"
+            user.username = f"[deleted]_{user.id}"
             user.email = f"deleted_{user.id}@deleted.com"
             user.is_active = False
             user.user_type = None
