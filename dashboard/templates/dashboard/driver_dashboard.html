@@ -197,7 +197,7 @@
     </div>
 
     <div class="modal fade" id="createPostModal" tabindex="-1">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Create Carpool Post</h5>
@@ -215,6 +215,15 @@
                                 {{ form.date }}
                         </div>
                         <div class="mb-3">
+                                <label class="form-label">Where will you pick riders up? Enter either a valid address or recognizable name of the place.</label>
+                                {{ form.pickup }}
+                        </div> 
+
+                             <div class="mb-3">
+                                <label class="form-label">What time is pickup?</label>
+                                {{ form.pickup_time }}
+                        </div>   
+                        <div class="mb-3">
                                 <label class="form-label">Where will you be going? Enter either a valid address or recognizable name of the place.</label>
                                 {{ form.dropoff }}
                         </div>    
@@ -224,15 +233,7 @@
                                 {{ form.dropoff_time }}
                         </div>  
 
-                        <div class="mb-3">
-                                <label class="form-label">Where will you pick riders up? Enter either a valid address or recognizable name of the place.</label>
-                                {{ form.pickup }}
-                        </div> 
-
-                             <div class="mb-3">
-                                <label class="form-label">What time is pickup?</label>
-                                {{ form.pickup_time }}
-                        </div>   
+                        
 
                     
         
