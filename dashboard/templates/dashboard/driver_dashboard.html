@@ -63,8 +63,8 @@
                                         <h6 class="card-subtitle mb-3"><strong>{{post.name}}</strong></h6>
                                         <p class="card-text"><i>Posted:</i> {{ post.created_at|date:"M d, Y" }} by {{ post.author.driverprofile.name|default:post.author.username }}</p>
                                         <p class="card-text"><i>Date:</i> {{ post.date }}</p>
-                                        <p class="card-text"><i>Pickup</i>: {{ post.pickup }} at {{ post.pickup_time }}</p>
-                                        <p class="card-text"><i>Dropoff:</i> {{ post.dropoff }} at {{ post.dropoff_time }}</p>
+                                        <p class="card-text"><i>Pickup</i>: {{ post.pickup }} at {{ post.pickup_time|time:"g:i A" }}</p>
+                                        <p class="card-text"><i>Dropoff:</i> {{ post.dropoff }} at {{ post.dropoff_time|time:"g:i A" }}</p>
                                         <p class="card-text"><i>Description:</i> {{ post.notes|linebreaksbr }}</p>
                                         {% if post.image %}
                                             {% if post.image_visibility == 'all' or post.image_visibility == 'drivers' %}
@@ -126,8 +126,8 @@
                                             <h6 class="card-subtitle mb-3"><strong>{{post.name}}</strong></h6>
                                             <p class="card-text"><i>Posted:</i> {{ post.created_at|date:"M d, Y" }} by {{ post.author.driverprofile.name|default:post.author.username }}</p>
                                             <p class="card-text"><i>Date:</i> {{ post.date }}</p>
-                                            <p class="card-text"><i>Pickup</i>: {{ post.pickup }} at {{ post.pickup_time }}</p>
-                                            <p class="card-text"><i>Dropoff:</i> {{ post.dropoff }} at {{ post.dropoff_time }}</p>
+                                            <p class="card-text"><i>Pickup</i>: {{ post.pickup }} at {{ post.pickup_time|time:"g:i A" }}</p>
+                                            <p class="card-text"><i>Dropoff:</i> {{ post.dropoff }} at {{ post.dropoff_time|time:"g:i A" }}</p>
                                             <p class="card-text"><i>Description:</i> {{ post.notes }}</p>
                                             {% if post.image %}
                                                 {% if post.image_visibility == 'all' or post.image_visibility == 'drivers' %}

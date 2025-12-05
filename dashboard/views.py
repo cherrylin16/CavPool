@@ -68,7 +68,7 @@ def rider_dashboard(request):
         try:
             # Parse date and time from post
             post_date = datetime.strptime(post.date, '%Y-%m-%d').date()
-            post_time = datetime.strptime(post.pickup_time, '%H:%M').time()
+            post_time = post.pickup_time
             
             # Check if post is in the future
             if post_date > current_date or (post_date == current_date and post_time > current_time):
@@ -161,7 +161,7 @@ def driver_dashboard(request):
         try:
             # Parse date and time from post
             post_date = datetime.strptime(post.date, '%Y-%m-%d').date()
-            post_time = datetime.strptime(post.pickup_time, '%H:%M').time()
+            post_time = post.pickup_time
             
             # Check if post is in the future
             if post_date > current_date or (post_date == current_date and post_time > current_time):
