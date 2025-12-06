@@ -78,16 +78,10 @@
                                             {% endif %}
                                         {% endif %}
 
-                                        <div class="d-flex justify-content-end align-items-center mt-auto gap-2">
+                                        <div class="d-flex justify-content-center align-items-center mt-auto gap-2">
                                             {% if post.author == request.user %}
                                                 <a href="{% url 'ride_requests:manage_requests' post.id %}" class="btn btn-sm btn-info">Manage Requests</a>
                                                 <a href="{% url 'edit_own_carpool_post' post.id %}" class="btn btn-warning btn-sm">Edit</a>
-                                                <button class="btn btn-sm btn-danger"
-                                                    data-bs-toggle="modal"
-                                                    data-bs-target="#deletePostModal"
-                                                    data-post-id="{{ post.id }}">
-                                                Delete
-                                                </button>
                                             {% endif %}
                                             {% if post.id in flagged_posts %}
                                                 <button class="btn btn-sm btn-warning"
@@ -102,6 +96,15 @@
                                                     data-bs-target="#flagPostModal"
                                                     data-post-id="{{ post.id }}">
                                                     <i class="material-icons" style="font-size: 16px;">flag</i>
+                                                </button>
+                                            {% endif %}
+
+                                            {% if post.author == request.user %}
+                                                <button class="btn btn-sm btn-danger"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#deletePostModal"
+                                                    data-post-id="{{ post.id }}">
+                                                Delete
                                                 </button>
                                             {% endif %}
                                         </div>    
@@ -152,27 +155,27 @@
                     {% endif %}
                 </div>
 
-                <div class="filters-box" style="width: 200px; flex-shrink: 0;">
+                <div class="filters-box px-3 pt-3" style="width: 200px; flex-shrink: 0;">
                     <form method="get" action="{% url 'driver dashboard' %}">
                         <h6>Filters</h6>
                         <input type="hidden" name="q" value="{{ request.GET.q }}">
                         
-                        <div class="mb-3">
+                        <div class="mb-4 mt-3">
                             <label class="form-label">Date:</label>
                             <input type="date" name="date" class="form-control" value="{{ request.GET.date }}">
                         </div>
                         
-                        <div class="mb-3">
+                        <div class="mb-4">
                             <label class="form-label">Pickup Time:</label>
                             <input type="time" name="pickup_time" class="form-control" value="{{ request.GET.pickup_time }}">
                         </div>
                         
-                        <div class="mb-3">
+                        <div class="mb-4">
                             <label class="form-label">Dropoff Time:</label>
                             <input type="time" name="dropoff_time" class="form-control" value="{{ request.GET.dropoff_time }}">
                         </div>
                         
-                        <button type="submit" class="btn btn-primary btn-sm w-100 mb-2">Apply Filters</button>
+                        <button type="submit" class="btn btn-primary w-100 mb-2">Apply Filters</button>
                         <a href="{% url 'driver dashboard' %}" class="btn btn-outline-secondary btn-sm w-100">Clear</a>
                     </form>
                 </div>

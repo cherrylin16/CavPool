@@ -1,12 +1,42 @@
 /* Change color of primary button */
 .btn-primary {
-  background-color: #C47A35 !important;
-  border-color: #C47A35 !important;
+  background-color: #cc6600 !important;
+  border-color: #cc6600 !important;
 }
 
 .btn-primary:hover {
     background-color: #a0642c !important;
     border-color: #a0642c !important;
+}
+
+.btn-warning {
+    background-color: #ffeb99 !important;
+    border-color: #ffeb99 !important;
+}
+
+.btn-warning:hover {
+    background-color: #e6b800 !important;
+    border-color: #e6b800 !important;
+}
+
+.btn-success {
+    background-color: #2851a4 !important;
+    border-color: #2851a4 !important;
+}
+
+.btn-success:hover {
+    background-color: #2851a4 !important;
+    border-color: #2851a4 !important;
+}
+
+.btn-outline-secondary {
+  border-color: white;
+  color: white;
+}
+
+.btn-outline-secondary:hover {
+  color: #37518C;
+  background-color: white;
 }
 
 body {
@@ -185,7 +215,7 @@ body {
     right: 6px;
     width: 14px;
     height: 14px;
-    background-color: red;
+    background-color: #cc3300;
     color: white;
     border-radius: 50%;
     display: flex;
@@ -202,7 +232,7 @@ body {
     right: 6px;
     width: 14px;
     height: 14px;
-    background-color: red;
+    background-color: #cc3300;
     color: white;
     border-radius: 50%;
     display: flex;
