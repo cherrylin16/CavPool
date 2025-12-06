@@ -9,9 +9,6 @@ class User(AbstractUser):
     ]
     user_type = models.CharField(max_length=10, choices=USER_TYPE_CHOICES, null=True, blank=True)
     is_moderator = models.BooleanField(default=False)
-    is_verified = models.BooleanField(default=False)
-    computing_id = models.CharField(max_length=20, blank=True)
-    verification_token = models.CharField(max_length=100, blank=True)
 
     def is_driver(self):
         return self.user_type == 'driver'

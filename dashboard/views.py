@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from accounts.decorators import verified_required
+
 from accounts.models import RiderProfile, DriverProfile, User
 from .models import CarpoolPost
 from .forms import CarpoolPostForm
@@ -15,7 +15,7 @@ from datetime import datetime, date, time
 from accounts.models import DriverProfile
 from accounts.forms import DriverProfileForm
 
-@verified_required
+@login_required
 def rider_dashboard(request):
     profile = None
     display_name = request.user.username
@@ -68,7 +68,7 @@ def rider_dashboard(request):
         try:
             # Parse date and time from post
             post_date = datetime.strptime(post.date, '%Y-%m-%d').date()
-            post_time = datetime.strptime(post.pickup_time, '%H:%M').time()
+            post_time = post.pickup_time
             
             # Check if post is in the future
             if post_date > current_date or (post_date == current_date and post_time > current_time):
@@ -108,7 +108,7 @@ def view_driver_profile(request):
         'profile': profile
     })
 
-@verified_required
+@login_required
 def driver_dashboard(request):
     profile = None
     display_name = request.user.username
@@ -161,7 +161,7 @@ def driver_dashboard(request):
         try:
             # Parse date and time from post
             post_date = datetime.strptime(post.date, '%Y-%m-%d').date()
-            post_time = datetime.strptime(post.pickup_time, '%H:%M').time()
+            post_time = post.pickup_time
             
             # Check if post is in the future
             if post_date > current_date or (post_date == current_date and post_time > current_time):
@@ -183,7 +183,7 @@ def driver_dashboard(request):
         'flagged_posts': flagged_posts
     })
 
-@verified_required
+@login_required
 def create_carpool_post(request):
     if request.method == 'POST':
         # Handle deletion
