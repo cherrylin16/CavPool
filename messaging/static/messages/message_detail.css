@@ -1,3 +1,4 @@
+
   .chat-container {
     width: 100%;
     max-width: 1400px; 
@@ -21,6 +22,9 @@
   }
   
   .chat-messages {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
     height: 60vh;
     overflow-y: auto;
     background-color: #f8f9fa;
@@ -29,6 +33,7 @@
   }
   
   .message {
+    display: inline-block;
     margin: 8px 0;
     padding: 10px 14px;
     border-radius: 16px;
