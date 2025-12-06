@@ -13,7 +13,7 @@
 
   .chat-header {
     padding: 15px;
-    background-color: #0d6efd;
+    background-color: #2851a4;
     color: white;
     font-weight: 500;
     border-top-left-radius: 10px;
@@ -71,12 +71,12 @@
   
   .chat-input button {
     border: none;
-    background-color: #0d6efd;
+    background-color: #2851a4;
     color: white;
     padding: 0 25px;
     border-bottom-right-radius: 10px;
   }
   
   .chat-input button:hover {
-    background-color: #0b5ed7;
+    background-color: #2E4376;
   }

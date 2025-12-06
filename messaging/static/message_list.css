@@ -68,6 +68,10 @@
   
   /* Badge arrow style */
   .badge {
-    background-color: #37518C;
+    background-color: #2E4376;
     font-size: 0.9rem;
+  }
+
+  .bg-primary {
+    background-color: #2E4376;
   }
