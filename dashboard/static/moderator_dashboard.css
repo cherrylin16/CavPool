@@ -26,9 +26,9 @@ body {
 }
 
 .main{
-    height: 100%;
+    flex-grow: 1;
     padding: 40px;
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 
 .side-panel-toggle {
@@ -91,4 +91,21 @@ body {
     background-color: #ffd6d6;
     padding: 20px;
     border-radius: 8px;
+}
+
+.notification-badge {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 14px;
+    height: 14px;
+    background-color: #cc3300;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 10px;
+    font-weight: bold;
+    z-index: 3000;
 }

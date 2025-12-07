@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,23 +12,88 @@
     crossorigin="anonymous">
   <title>Ride-Sharing Landing Page</title>
 </head>
+
+
+<style>
+        body {
+          background: linear-gradient(2deg, #5b84d7 70%, #2851a4 100%);
+        }
+        .hero-section {
+            color: white;
+            margin-top: 60px;
+            font-weight: bold;
+        }
+
+        .btn-primary {
+          background-color: #2851a4 !important; 
+          border-color: #2851a4 !important;
+        }
+
+        .btn-primary:hover {
+          background-color: #2E4376 !important;
+          border-color: #2E4376 !important;
+        }
+
+        .btn-danger {
+            background-color: #C47A35 !important;
+            border-color: #C47A35 !important;
+        }
+
+        .btn-danger:hover {
+          background-color: #a0642c !important;
+          border-color: #a0642c !important;
+        }
+        .corner-image {
+          width: 550px;
+          height: 380px;
+        }
+        .corner-image2 { 
+          width: 550px;
+          height: 380px;
+          
+        }
+        
+        .full-container {
+          width: 100%
+        }
+    </style>
+</head>
+
 <body>
+    <div class="hero-section text-center">
+        <div class="full-container mt-4">
+            <h1 class="display-7 mb-4">Welcome to CavPool!</h1>
+            <h3 class="lead">Plan carpools, connect with others, and save the planet while you're at it.</h3>
 
+            <div class="mt-5 mb-4">
+              <p class = "lead">First time here? Check out what we do.</p>
+              <a href="{% url 'onboarding' %}" class="btn btn-primary btn-lg">Get Started Here</a>
+            </div> 
 
-  <div class="text-center mt-5">
-    <h1>Welcome to Ride-Sharing App</h1>
-    <p class="lead">Plan carpools, connect with others, and save the planet while you're at it.</p>
-  </div>
+            <div class="">
+              <p class = "lead">Welcome back! Select the profile you wish to log in to:</p>
 
-  <!-- Driver Login Button -->
-  <div class="text-center mt-3">
-    <a href="{% url 'driver_login' %}" class="btn btn-danger btn-lg">Drivers Accounts</a>
-  </div>
+              <!-- Driver Login Button -->
+              <a href="{% url 'driver_login' %}" class="me-2 btn btn-danger btn-lg">Driver Account</a>
+              <!-- Rider Login Button -->
+              <a href="{% url 'rider_login' %}" class="btn btn-danger btn-lg">Rider Account</a>
+            </div>
 
-  <!-- Rider Login Button -->
-  <div class="text-center mt-3">
-    <a href="{% url 'rider_login' %}" class="btn btn-danger btn-lg">Riders Accounts</a>
-  </div>
-
+            
+        </div>
+    </div>
+    <div class="img-container d-flex justify-content-between">
+              <div>
+                  <img src="{% static 'car.png' %}" 
+                  class="corner-image"
+                  alt="Corner image">
+              </div>
+              <div>
+                    <img src="{% static 'car2.png' %}" 
+                    class="corner-image2"
+                    alt="Corner image">
+              </div>
+        </div>
 </body>
+
 </html>

@@ -1,13 +1,21 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from accounts.models import RiderProfile, DriverProfile
+
+from accounts.models import RiderProfile, DriverProfile, User
 from .models import CarpoolPost
 from .forms import CarpoolPostForm
 from django.http import JsonResponse
-from .models import CarpoolPost, Flag
+from .models import CarpoolPost, Flag, Review
 from django.views.decorators.http import require_POST
+from django.db.models import Q, Avg
+from django.db import models
+from ride_requests.models import RideRequest
+from datetime import datetime, date, time
+from accounts.models import DriverProfile
+from accounts.forms import DriverProfileForm
 
+@login_required
 def rider_dashboard(request):
     profile = None
     display_name = request.user.username
@@ -18,15 +26,89 @@ def rider_dashboard(request):
                 display_name = profile.name
         except RiderProfile.DoesNotExist:
             pass
+
+     # search queries and filters
+    query = request.GET.get('q', '')
+    date_filter = request.GET.get('date', '')
+    pickup_time_filter = request.GET.get('pickup_time', '')
+    dropoff_time_filter = request.GET.get('dropoff_time', '')
+
+    posts = CarpoolPost.objects.filter(author__is_active=True)
+
+    if query:
+        posts = posts.filter(
+            Q(name__icontains=query) |
+            Q(dropoff__icontains=query) |
+            Q(pickup__icontains=query) |
+            Q(date__icontains=query) |
+            Q(pickup_time__icontains=query) |
+            Q(dropoff_time__icontains=query) |
+            Q(name__icontains=query) |
+            Q(author__username__icontains=query)
+        ).distinct()
     
-    posts = CarpoolPost.objects.all()
+    if date_filter:
+        posts = posts.filter(date__icontains=date_filter)
+    
+    if pickup_time_filter:
+        posts = posts.filter(pickup_time__icontains=pickup_time_filter)
+    
+    if dropoff_time_filter:
+        posts = posts.filter(dropoff_time__icontains=dropoff_time_filter)
+    
+    # Separate active and previous posts
+    now = datetime.now()
+    current_date = now.date()
+    current_time = now.time()
+    
+    active_posts = []
+    previous_posts = []
+    
+    for post in posts:
+        try:
+            # Parse date and time from post
+            post_date = datetime.strptime(post.date, '%Y-%m-%d').date()
+            post_time = post.pickup_time
+            
+            # Check if post is in the future
+            if post_date > current_date or (post_date == current_date and post_time > current_time):
+                active_posts.append(post)
+            else:
+                previous_posts.append(post)
+        except (ValueError, TypeError):
+            # If date/time parsing fails, treat as active
+            active_posts.append(post)
+    
     flagged_posts = set(Flag.objects.filter(flagged_by=request.user).values_list('post_id', flat=True))
+    
+    # Get user's ride requests and add them to posts
+    user_requests = set()
+    if request.user.is_authenticated:
+        user_ride_requests = RideRequest.objects.filter(rider=request.user, rider__is_active=True)
+        user_requests = set(user_ride_requests.values_list('post_id', flat=True))
+        request_dict = {req.post_id: req for req in user_ride_requests}
+        
+        # Add request object to each post
+        for post in active_posts + previous_posts:
+            post.user_request = request_dict.get(post.id)
+    
     return render(request, "dashboard/rider_dashboard.html", {
         'display_name': display_name,
-        'posts': posts,
-        'flagged_posts': flagged_posts
+        'active_posts': active_posts,
+        'previous_posts': previous_posts,
+        'query': query,
+        'flagged_posts': flagged_posts,
+        'user_requests': user_requests
     })
 
+def view_driver_profile(request):
+    profile = get_object_or_404(DriverProfile, user_id=driver_id)
+
+    return render(request, "dashboard/rider_dashboard.html", {
+        'profile': profile
+    })
+
+@login_required
 def driver_dashboard(request):
     profile = None
     display_name = request.user.username
@@ -38,12 +120,65 @@ def driver_dashboard(request):
         except DriverProfile.DoesNotExist:
             pass
     
-    posts = CarpoolPost.objects.all()
+    # search queries and filters
+    query = request.GET.get('q', '')
+    date_filter = request.GET.get('date', '')
+    pickup_time_filter = request.GET.get('pickup_time', '')
+    dropoff_time_filter = request.GET.get('dropoff_time', '')
+
+    posts = CarpoolPost.objects.filter(author__is_active=True)
+
+    if query:
+        posts = posts.filter(
+            Q(name__icontains=query) |
+            Q(dropoff__icontains=query) |
+            Q(pickup__icontains=query) |
+            Q(date__icontains=query) |
+            Q(pickup_time__icontains=query) |
+            Q(dropoff_time__icontains=query) |
+            Q(name__icontains=query) |
+            Q(author__username__icontains=query)
+        ).distinct()
+    
+    if date_filter:
+        posts = posts.filter(date__icontains=date_filter)
+    
+    if pickup_time_filter:
+        posts = posts.filter(pickup_time__icontains=pickup_time_filter)
+    
+    if dropoff_time_filter:
+        posts = posts.filter(dropoff_time__icontains=dropoff_time_filter)
+
+    # Separate active and previous posts
+    now = datetime.now()
+    current_date = now.date()
+    current_time = now.time()
+    
+    active_posts = []
+    previous_posts = []
+    
+    for post in posts:
+        try:
+            # Parse date and time from post
+            post_date = datetime.strptime(post.date, '%Y-%m-%d').date()
+            post_time = post.pickup_time
+            
+            # Check if post is in the future
+            if post_date > current_date or (post_date == current_date and post_time > current_time):
+                active_posts.append(post)
+            else:
+                previous_posts.append(post)
+        except (ValueError, TypeError):
+            # If date/time parsing fails, treat as active
+            active_posts.append(post)
+
     flagged_posts = set(Flag.objects.filter(flagged_by=request.user).values_list('post_id', flat=True))
     form = CarpoolPostForm()
     return render(request, "dashboard/driver_dashboard.html", {
         'display_name': display_name, 
-        'posts': posts, 
+        'active_posts': active_posts,
+        'previous_posts': previous_posts,
+        'query': query,
         'form': form,
         'flagged_posts': flagged_posts
     })
@@ -72,10 +207,46 @@ def create_carpool_post(request):
 def landing(request):
     return render(request, "dashboard/landing.html")
 
+def onboarding(request):
+    return render(request, "dashboard/onboarding.html")
+
 def moderator_dashboard(request):
     display_name = request.user.username
     return render(request, "dashboard/moderator_dashboard.html", {
         "display_name": display_name
+    })
+
+@login_required
+def user_analytics(request):
+    if not request.user.is_moderator:
+        return redirect('/')
+    
+    display_name = request.user.username
+    user_analytics = None
+    search_username = request.GET.get('search_user', '')
+    
+    if search_username:
+        try:
+            driver_profile = DriverProfile.objects.get(user__username__icontains=search_username)
+            user = driver_profile.user
+            reviews = Review.objects.filter(driver=user)
+            avg_rating = reviews.aggregate(avg=Avg('rating'))['avg']
+            recent_reviews = reviews[:5]
+            user_analytics = {
+                'user': user,
+                'avg_rating': round(avg_rating, 1) if avg_rating else 0,
+                'total_reviews': reviews.count(),
+                'recent_reviews': recent_reviews
+            }
+        except DriverProfile.DoesNotExist:
+            messages.error(request, f'Driver "{search_username}" not found.')
+        except DriverProfile.MultipleObjectsReturned:
+            messages.error(request, f'Multiple drivers found with username "{search_username}". Please be more specific.')
+    
+    return render(request, "dashboard/user_analytics.html", {
+        "display_name": display_name,
+        "user_analytics": user_analytics,
+        "search_username": search_username
     })
 
 @login_required
@@ -128,3 +299,183 @@ def flag_post(request, post_id):
         messages.success(request, "Flag updated successfully. Our moderators will review it soon.")
     
     return redirect(request.META.get('HTTP_REFERER', '/'))
+
+@login_required
+@require_POST
+def submit_review(request, post_id):
+    post = get_object_or_404(CarpoolPost, id=post_id)
+    rating = request.POST.get('rating')
+    description = request.POST.get('description', '')
+    
+    if not rating or int(rating) < 1 or int(rating) > 5:
+        messages.error(request, 'Please provide a valid rating (1-5 stars).')
+        return redirect(request.META.get('HTTP_REFERER', '/'))
+    
+    review, created = Review.objects.get_or_create(
+        post=post,
+        reviewer=request.user,
+        driver=post.author,
+        defaults={'rating': int(rating), 'description': description}
+    )
+    
+    if created:
+        messages.success(request, 'Review submitted successfully!')
+    else:
+        messages.info(request, 'You have already reviewed this ride.')
+    
+    return redirect(request.META.get('HTTP_REFERER', '/'))
+
+@login_required
+def get_driver_info(request, user_id):
+    try:
+        from accounts.models import DriverProfile
+        driver_profile = DriverProfile.objects.get(user_id=user_id)
+        data = {
+            'name': driver_profile.name,
+            'computing_id': driver_profile.computing_id,
+            'gender': driver_profile.get_gender_display(),
+            'class_year': driver_profile.class_year,
+            'photo': driver_profile.profile_picture.url if driver_profile.profile_picture else None
+        }
+        return JsonResponse(data)
+    except DriverProfile.DoesNotExist:
+        return JsonResponse({'error': 'Driver profile not found'}, status=404)
+
+@login_required
+def ban_user(request):
+    if not request.user.is_moderator:
+        return redirect('/')
+    
+    search_query = request.GET.get('search', '')
+    user_found = None
+    has_driver_profile = False
+    has_rider_profile = False
+    user_type_display = 'None'
+    
+    if search_query:
+        try:
+            # First try exact username match, then email match
+            user_found = User.objects.filter(username__iexact=search_query).first()
+            if not user_found:
+                user_found = User.objects.filter(email__iexact=search_query).first()
+            
+            if user_found:
+                driver_profiles = DriverProfile.objects.filter(user=user_found)
+                rider_profiles = RiderProfile.objects.filter(user=user_found)
+                
+                has_driver_profile = driver_profiles.exists()
+                has_rider_profile = rider_profiles.exists()
+                
+                # If no actual profiles exist but user_type is set, treat as if profile exists for deletion purposes
+                if not has_driver_profile and user_found.user_type == 'driver':
+                    has_driver_profile = True
+                if not has_rider_profile and user_found.user_type == 'rider':
+                    has_rider_profile = True
+                
+                # Create display string for user types
+                user_types = []
+                if has_driver_profile:
+                    user_types.append('Driver')
+                if has_rider_profile:
+                    user_types.append('Rider')
+                user_type_display = ' and '.join(user_types) if user_types else 'None'
+        except Exception:
+            pass
+    
+    if request.method == 'POST':
+        user_id = request.POST.get('user_id')
+        profile_type = request.POST.get('profile_type')
+        
+        try:
+            target_user = User.objects.get(id=user_id)
+            
+            if profile_type == 'driver':
+                try:
+                    target_user.driverprofile.delete()
+                except DriverProfile.DoesNotExist:
+                    pass
+                messages.success(request, f'Driver profile for {target_user.username} has been deleted.')
+            elif profile_type == 'rider':
+                try:
+                    target_user.riderprofile.delete()
+                except RiderProfile.DoesNotExist:
+                    pass
+                messages.success(request, f'Rider profile for {target_user.username} has been deleted.')
+            
+            # Check if user has any remaining profiles
+            has_driver = DriverProfile.objects.filter(user=target_user).exists()
+            has_rider = RiderProfile.objects.filter(user=target_user).exists()
+            
+            # Always clear the user_type for the deleted profile type
+            if profile_type == 'driver':
+                if has_rider:
+                    target_user.user_type = 'rider'
+                else:
+                    target_user.user_type = None
+            elif profile_type == 'rider':
+                if has_driver:
+                    target_user.user_type = 'driver'
+                else:
+                    target_user.user_type = None
+            
+            # If no profiles left, deactivate account
+            if not has_driver and not has_rider:
+                target_user.username = f"[deleted]_{target_user.id}"
+                target_user.email = f"deleted_{target_user.id}@deleted.com"
+                target_user.is_active = False
+                messages.success(request, f'User account has been completely deactivated.')
+            
+            target_user.save()
+            
+        except Exception as e:
+            messages.error(request, f'Error deleting profile: {e}')
+        
+        return redirect('ban_user')
+    
+    return render(request, 'dashboard/ban_user.html', {
+        'search_query': search_query,
+        'user_found': user_found,
+        'has_driver_profile': has_driver_profile,
+        'has_rider_profile': has_rider_profile,
+        'user_type_display': user_type_display,
+    })
+
+@login_required
+def edit_carpool_post(request, post_id):
+    if not request.user.is_moderator:
+        return redirect('/')
+
+    post = get_object_or_404(CarpoolPost, id=post_id)
+
+    if request.method == "POST":
+        form = CarpoolPostForm(request.POST, request.FILES, instance=post)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Post updated successfully.")
+            return redirect('flagged_posts')
+    else:
+        form = CarpoolPostForm(instance=post)
+
+    return render(request, "dashboard/edit_post.html", {
+        "form": form,
+        "post": post
+    })
+
+@login_required
+def edit_own_carpool_post(request, post_id):
+    # Get the post, but make sure the logged-in user is the author
+    post = get_object_or_404(CarpoolPost, id=post_id, author=request.user)
+
+    if request.method == "POST":
+        form = CarpoolPostForm(request.POST, request.FILES, instance=post)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Your post has been updated.")
+            return redirect('driver dashboard')
+    else:
+        form = CarpoolPostForm(instance=post)
+
+    return render(request, "dashboard/edit_own_post.html", {
+        "form": form,
+        "post": post
+    })

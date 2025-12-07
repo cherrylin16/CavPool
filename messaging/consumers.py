@@ -35,6 +35,13 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 "sender": sender.username,
             },
         )
+        await self.channel_layer.group_send(
+            f"notify_{receiver.id}",
+            {
+                "type": "notify",
+                "from": sender.username,
+            }
+)
 
     async def chat_message(self, event):
         await self.send(text_data=json.dumps({
@@ -50,3 +57,25 @@ class ChatConsumer(AsyncWebsocketConsumer):
     def get_user(self, user_id):
         User = get_user_model()
         return User.objects.get(id=user_id)
+    
+class NotificationConsumer(AsyncWebsocketConsumer):
+    async def connect(self):
+        print("NOTIFICATION WS CONNECTED FOR USER:", self.scope["user"].id)
+        user = self.scope["user"]
+        if not user.is_authenticated:
+            await self.close()
+            return
+
+        self.group_name = f"notify_{user.id}"
+        await self.channel_layer.group_add(self.group_name, self.channel_name)
+        await self.accept()
+
+    async def disconnect(self, close_code):
+        await self.channel_layer.group_discard(self.group_name, self.channel_name)
+
+    async def notify(self, event):
+        print("NOTIFY EVENT RECEIVED:", event)
+        await self.send(text_data=json.dumps({
+            "notification": True,
+            "from": event["from"]
+        }))

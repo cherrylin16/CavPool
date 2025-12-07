@@ -25,22 +25,24 @@
         <div class="action-container text-center">
             <div class="d-grid gap-3 col-6 mx-auto">
                 <a href="{% url 'flagged_posts' %}" class="btn btn-moderator">Approve Posts</a>
-                <button class="btn btn-moderator">Ban User</button>
-                <button class="btn btn-moderator">View Reports</button>
-                <button class="btn btn-moderator">Analytics</button>
+                <a href="{% url 'ban_user' %}" class="btn btn-moderator">Ban User</a>
+                <a href="{% url 'user_analytics' %}" class="btn btn-moderator">View Reports</a>
             </div>
         </div>
     </div>
 
     <button class="side-panel-toggle" type="button">
+        <span id="msg-badge" class="notification-badge" style="display:none;">●</span>
         <span class="material-symbols-outlined sp-icon-open" style="font-size:48px;">menu</span>
         <span class="material-symbols-outlined sp-icon-close" style="font-size:48px;">menu</span>
     </button>
 
     <div class="side-panel">
         <div class="d-grid gap-2">
-            <a href="#" class="btn btn-moderator btn-lg btn-block py-2">Moderation Home</a>
-            <a href="#" class="btn btn-moderator btn-lg btn-block py-2">User Management</a>
+            <a href="{% url 'moderator_dashboard' %}" class="btn btn-moderator btn-lg btn-block py-2">Moderation Home</a>
+            <a href="{% url 'flagged_posts' %}" class="btn btn-moderator btn-lg btn-block py-2">Flagged Posts</a>
+            <a href="{% url 'ban_user' %}" class="btn btn-moderator btn-lg btn-block py-2">Ban User</a>
+            <a href="{% url 'user_analytics' %}" class="btn btn-moderator btn-lg btn-block py-2">User Analytics</a>
             <a href="{% url 'account_logout' %}" class="btn btn-moderator btn-lg btn-block py-2">Log Out</a>
         </div>
     </div>
@@ -52,5 +54,50 @@
         document.querySelector(".wrapper").classList.toggle("side-panel-open");
     });
 </script>
+
+<script>
+    function showMessageBadge() {
+        const badge = document.getElementById("msg-badge");
+        if (badge) badge.style.display = "flex";
+    }
+    document.addEventListener("DOMContentLoaded", function () {
+        const toggle = document.querySelector(".side-panel-toggle");
+        if (toggle) {
+            toggle.addEventListener("click", () => {
+                const badge = document.getElementById("msg-badge");
+                if (badge) badge.style.display = "none";
+            });
+        }
+    });
+</script>
+
+<script>
+    async function checkUnreadMessages() {
+        try {
+            const response = await fetch("/messages/unread-count/", {
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest"
+                }
+            });
+            if (!response.ok) return;
+            const data = await response.json();
+            const badge = document.getElementById("msg-badge");
+            if (!badge) return;
+
+            if (data.unread && data.unread > 0) {
+                badge.style.display = "flex";
+            } else {
+                badge.style.display = "none";
+            }
+        } catch (e) {
+            console.error("Error checking unread messages:", e);
+        }
+    }
+    document.addEventListener("DOMContentLoaded", function () {
+        checkUnreadMessages();
+        setInterval(checkUnreadMessages, 10000);
+    });
+</script>
+
 </body>
 </html>

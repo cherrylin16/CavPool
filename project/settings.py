@@ -62,6 +62,7 @@ INSTALLED_APPS = [
     'rider_profile',
     'driver_profile.apps.DriverProfileConfig',
     'messaging.apps.MessagingConfig',
+    'ride_requests',
     'django.contrib.sites',
     'allauth',
     'allauth.account',
@@ -242,7 +243,18 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# Email configuration
+if IS_HEROKU_APP:
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    EMAIL_HOST = 'smtp.gmail.com'
+    EMAIL_PORT = 587
+    EMAIL_USE_TLS = True
+    EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+    EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+else:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+DEFAULT_FROM_EMAIL = 'noreply@uvarideshare.com'
 
 # Custom User Model
 AUTH_USER_MODEL = 'accounts.User'

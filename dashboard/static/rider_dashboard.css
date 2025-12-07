@@ -1,12 +1,42 @@
 /* Change color of primary button */
 .btn-primary {
-  background-color: #C47A35 !important;
-  border-color: #C47A35 !important;
+  background-color: #cc6600 !important;
+  border-color: #cc6600 !important;
 }
 
 .btn-primary:hover {
     background-color: #a0642c !important;
     border-color: #a0642c !important;
+}
+
+.btn-warning {
+    background-color: #ffeb99 !important;
+    border-color: #ffeb99 !important;
+}
+
+.btn-warning:hover {
+    background-color: #e6b800 !important;
+    border-color: #e6b800 !important;
+}
+
+.btn-success {
+    background-color: #2851a4 !important;
+    border-color: #2851a4 !important;
+}
+
+.btn-success:hover {
+    background-color: #2851a4 !important;
+    border-color: #2851a4 !important;
+}
+
+.btn-outline-secondary {
+  border-color: white;
+  color: white;
+}
+
+.btn-outline-secondary:hover {
+  color: #37518C;
+  background-color: white;
 }
 
 body {
@@ -33,20 +63,23 @@ body {
     width: 57px;
     height: 55px;
     flex-shrink: 0;
-    display: grid;
-    place-items: center;
+    /* display: grid;
+       place-items: center; */
 
-    color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    position: fixed;        
+    top: 0;
+    right: 0;
     background: #37518C;
+    color: white;
     border: none;
     border-radius: 6px 0 0 6px;
-    outline: none;
-    cursor: pointer;
     transition: right 0.3s ease;
-    position: fixed;
+    cursor: pointer;
     z-index: 2000;
-    top: 0;
-    right:0;
 }
 
 .side-panel-toggle:hover{
@@ -120,6 +153,7 @@ body {
     justify-content: center;
     margin-top: 6px;
     padding-top: 5px;
+    margin-left: 10px;
 
     color: #ffffff;
     background: #37518C;
@@ -154,7 +188,6 @@ body {
     border-radius: 6px 6px 6px 6px;
     outline: none;
 
-    margin-top: 5px;
     margin-left: auto;
 }
 
@@ -174,4 +207,38 @@ body {
     background-color: #c1d1f0;
     border-radius: 10px 10px 10px 10px;
 
+}
+
+.notification-badge {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 14px;
+    height: 14px;
+    background-color: #cc3300;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 10px;
+    font-weight: bold;
+    z-index: 3000;
+}
+
+.post-notification-badge {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 14px;
+    height: 14px;
+    background-color: #cc3300;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 10px;
+    font-weight: bold;
+    z-index: 5000;
 }

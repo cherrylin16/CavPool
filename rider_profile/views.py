@@ -1,12 +1,15 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+
 from accounts.models import RiderProfile
 from accounts.forms import RiderProfileForm
 
 @login_required
 def rider_profile(request):
     profile, created = RiderProfile.objects.get_or_create(user=request.user)
+    
+
     
     if request.method == 'POST':
         form = RiderProfileForm(request.POST, request.FILES, instance=profile)

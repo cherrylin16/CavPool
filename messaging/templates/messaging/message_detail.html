@@ -11,7 +11,11 @@
     integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
     crossorigin="anonymous">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <link rel="stylesheet" href="{% static 'rider_dashboard.css' %}">
+  {% if request.user.user_type == 'driver' %}
+    <link rel="stylesheet" href="{% static 'driver_dashboard.css' %}">
+  {% else %}
+    <link rel="stylesheet" href="{% static 'rider_dashboard.css' %}">
+  {% endif %}
   <link rel="stylesheet" href="{% static 'messages/message_detail.css' %}">
   <title>DM with {{ other_user.username }}</title>
 </head>
@@ -21,7 +25,7 @@
     <div class="main">
       <div class="chat-container">
         <div class="chat-header">
-          DM with {{ other_user.username }}
+          DM with {% if not other_user.is_active %}[deleted]{% else %}{{ other_user.username }}{% endif %}
         </div>
         <div id="chat-log" class="chat-messages">
           {% for msg in messages %}
@@ -49,13 +53,14 @@
     <div class="side-panel">
       <div class="d-grid gap-2">
         {% if request.user.user_type == 'driver' %}
-          <a href="/driver/" class="btn btn-primary btn-lg btn-block" style="margin-top: 5px;">Driver Dashboard</a>
+          <a href="{% url 'driver dashboard' %}" class="btn btn-primary btn-lg btn-block" style="margin-top: 5px;">Driver Dashboard</a>
+          <a href="{% url 'driver_profile' %}" class="btn btn-primary btn-block btn-lg py-2" style="margin-top: 5px">Driver Profile</a>
         {% else %}
-          <a href="/rider/" class="btn btn-primary btn-lg btn-block" style="margin-top: 5px;">Rider Dashboard</a>
+          <a href="{% url 'rider dashboard' %}" class="btn btn-primary btn-lg btn-block" style="margin-top: 5px;">Rider Dashboard</a>
+          <a href="{% url 'rider_profile' %}" class="btn btn-primary btn-block btn-lg py-2" style="margin-top: 5px">Rider Profile</a>
         {% endif %}
-        <a href="{% url 'message_list' %}" class="btn btn-primary btn-block btn-lg py-2" style="margin-top: 5px;">Messaging</a>
-        <a href="#" class="btn btn-primary btn-block btn-lg py-2" style="margin-top: 5px;">History</a>
-        <a href="{% url 'account_logout' %}" class="btn btn-primary btn-block btn-lg py-2" style="margin-top: 5px;">Log Out</a>
+        <a href="{% url 'message_list' %}" class="btn btn-primary btn-block btn-lg py-2" style="margin-top: 5px">Messaging</a>
+        <a href="{% url 'account_logout' %}" class="btn btn-primary btn-block btn-lg py-2" style="margin-top: 5px">Log Out</a>
       </div>
     </div>
   </div>
@@ -85,6 +90,12 @@
       messageElement.textContent = data.message;
       chatLog.appendChild(messageElement);
       chatLog.scrollTop = chatLog.scrollHeight;
+
+      if (data.sender !== "{{ request.user.username }}") {
+        if (typeof showMessageBadge === "function") {
+          showMessageBadge();
+        }
+      }
     };
 
     let websocketConnected = true;

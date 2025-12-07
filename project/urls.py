@@ -16,9 +16,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from dashboard import views as dashboard_views
 from django.views.generic import TemplateView
 
 urlpatterns = [
+    path("", dashboard_views.landing, name="landing"),
     path("ridesharing/", include("ridesharing.urls")),
     path('admin/', admin.site.urls),
     path('accounts/', include('accounts.urls')),
@@ -26,5 +28,6 @@ urlpatterns = [
     path("", include("driver_profile.urls")),
     path("", include("rider_profile.urls")),
     path("messages/", include("messaging.urls")),
+    path("ride-requests/", include("ride_requests.urls")),
     path('google29704b4949bc33ee.html', TemplateView.as_view(template_name='google29704b4949bc33ee.html')),
 ]

@@ -31,13 +31,19 @@
 
             <div class="search-container">
             
-                <form class="searchbar">
-                    <input type="text" placeholder="Search the name of a carpool trip, driver, location, or keyword">
-                </form>
+                <form method="get" class="searchbar d-flex" action = "{% url 'driver dashboard' %}">
+                    <input  
+                    type = "text"
+                    name = "q"
+                    class = "form-control me-2"
+                    placeholder="Search the name of a carpool trip, driver, location, or keyword"
+                    value = "{{ request.GET.q|default:'' }}"
+                    >
 
-                <button type="submit" class="search-button" type="button">
-                    <span class="material-symbols-outlined" style="font-size:27px;">search</span>            
-                </button>
+                    <button type="submit" class="search-button">
+                        <span class="material-symbols-outlined" style="font-size:27px;">search</span>            
+                    </button>
+                </form>
 
                 <button class="create-trip btn btn-primary btn-block" type="button" data-bs-toggle="modal" data-bs-target="#createPostModal">Create a Carpool Trip</button>
             </div>
@@ -46,82 +52,155 @@
                 <h5>Active Carpool Listings</h5>
             </div>
 
-            <div class="listings-filters-container mt-2">
-                <div class="listings-box row me-2">
-                    {% for post in posts %}
-                        <div class="col-md-6 col-lg-4 mb-3">
-                            <div class="card">
-                                <div class="card-body">
-                                    <h6 class="card-subtitle mb-2 text-muted">{{ post.author.driverprofile.name|default:post.author.username }} - {{ post.created_at|date:"M d, Y" }}</h6>
-                                    <p class="card-text">{{ post.text }}</p>
-                                    {% if post.image %}
-                                        {% if post.image_visibility == 'all' or post.image_visibility == 'drivers' %}
-                                            <img src="{{ post.image.url }}" class="img-fluid" style="max-height: 200px; width: 100%; object-fit: cover;">
-                                        {% else %}
-                                            <p class="text-muted"><em>Image visible to {{ post.get_image_visibility_display }}</em></p>
+            <div class="listings-filters-container mt-3 d-flex">
+                <div class="listings-box flex-grow-1 me-4">
+                    <div class="row">
+                        {% for post in active_posts %}
+                            <div class="col-xl-4 col-lg-4 col-md-6 mb-3">
+                                <div class="card position-relative" style="height: 500px;">
+                                    <span id="request-badge-{{ post.id }}" class="post-notification-badge" style="display:none;">●</span>
+                                    <div class="card-body d-flex flex-column">
+                                        <h6 class="card-subtitle mb-3"><strong>{{post.name}}</strong></h6>
+                                        <p class="card-text"><i>Posted:</i> {{ post.created_at|date:"M d, Y" }} by {{ post.author.driverprofile.name|default:post.author.username }}</p>
+                                        <p class="card-text"><i>Date:</i> {{ post.date }}</p>
+                                        <p class="card-text"><i>Pickup</i>: {{ post.pickup }} at {{ post.pickup_time|time:"g:i A" }}</p>
+                                        <p class="card-text"><i>Dropoff:</i> {{ post.dropoff }} at {{ post.dropoff_time|time:"g:i A" }}</p>
+                                        <p class="card-text"><i>Description:</i> {{ post.notes|linebreaksbr }}</p>
+                                        {% if post.image %}
+                                            {% if post.image_visibility == 'all' or post.image_visibility == 'drivers' %}
+                                                <div class="mb-3">
+                                                    <img src="{{ post.image.url }}" class="img-fluid" style="max-height: 150px; width: 100%; object-fit: cover; border-radius: 5px;">
+                                                </div>
+                                            {% else %}
+                                                <div class="mb-3">
+                                                    <p class="text-muted text-center"><em>Image visible to {{ post.get_image_visibility_display }}</em></p>
+                                                </div>
+                                            {% endif %}
                                         {% endif %}
-                                    {% endif %}
 
-                                    <div class="d-flex justify-content-end align-items-center mt-2 gap-2">
-                                        {% if post.author == request.user %}
-                                            <button class="btn btn-sm btn-danger"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#deletePostModal"
-                                                data-post-id="{{ post.id }}">
-                                            Delete
-                                            </button>
-                                        {% endif %}
-                                        {% if post.id in flagged_posts %}
-                                            <button class="btn btn-sm btn-warning"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#flagPostModal"
-                                                data-post-id="{{ post.id }}">
-                                                <i class="material-icons" style="font-size: 16px;">flag</i> Flagged
-                                            </button>
-                                        {% else %}
-                                            <button class="btn btn-sm btn-outline-warning"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#flagPostModal"
-                                                data-post-id="{{ post.id }}">
-                                                <i class="material-icons" style="font-size: 16px;">flag</i>
-                                            </button>
-                                        {% endif %}
-                                    </div>    
+                                        <div class="d-flex justify-content-center align-items-center mt-auto gap-2">
+                                            {% if post.author == request.user %}
+                                                <a href="{% url 'ride_requests:manage_requests' post.id %}" class="btn btn-sm btn-info">Manage Requests</a>
+                                                <a href="{% url 'edit_own_carpool_post' post.id %}" class="btn btn-warning btn-sm">Edit</a>
+                                            {% endif %}
+                                            {% if post.id in flagged_posts %}
+                                                <button class="btn btn-sm btn-warning"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#flagPostModal"
+                                                    data-post-id="{{ post.id }}">
+                                                    <i class="material-icons" style="font-size: 16px;">flag</i> Flagged
+                                                </button>
+                                            {% else %}
+                                                <button class="btn btn-sm btn-outline-warning"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#flagPostModal"
+                                                    data-post-id="{{ post.id }}">
+                                                    <i class="material-icons" style="font-size: 16px;">flag</i>
+                                                </button>
+                                            {% endif %}
+
+                                            {% if post.author == request.user %}
+                                                <button class="btn btn-sm btn-danger"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#deletePostModal"
+                                                    data-post-id="{{ post.id }}">
+                                                Delete
+                                                </button>
+                                            {% endif %}
+                                        </div>    
+                                    </div>
                                 </div>
                             </div>
+                        {% empty %}
+                            <div class="col-12">
+                                <p class="text-muted">There are currently no active carpool posts.</p>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    
+                    {% if previous_posts %}
+                    <div class="mt-5">
+                        <h5>Previous Carpool Listings</h5>
+                        <div class="row">
+                            {% for post in previous_posts %}
+                                <div class="col-xl-4 col-lg-4 col-md-6 mb-3">
+                                    <div class="card" style="height: 500px; opacity: 0.7;">
+                                        <div class="card-body d-flex flex-column">
+                                            <h6 class="card-subtitle mb-3"><strong>{{post.name}}</strong></h6>
+                                            <p class="card-text"><i>Posted:</i> {{ post.created_at|date:"M d, Y" }} by {{ post.author.driverprofile.name|default:post.author.username }}</p>
+                                            <p class="card-text"><i>Date:</i> {{ post.date }}</p>
+                                            <p class="card-text"><i>Pickup</i>: {{ post.pickup }} at {{ post.pickup_time|time:"g:i A" }}</p>
+                                            <p class="card-text"><i>Dropoff:</i> {{ post.dropoff }} at {{ post.dropoff_time|time:"g:i A" }}</p>
+                                            <p class="card-text"><i>Description:</i> {{ post.notes }}</p>
+                                            {% if post.image %}
+                                                {% if post.image_visibility == 'all' or post.image_visibility == 'drivers' %}
+                                                    <div class="mb-3">
+                                                        <img src="{{ post.image.url }}" class="img-fluid" style="max-height: 150px; width: 100%; object-fit: cover; border-radius: 5px;">
+                                                    </div>
+                                                {% else %}
+                                                    <div class="mb-3">
+                                                        <p class="text-muted text-center"><em>Image visible to {{ post.get_image_visibility_display }}</em></p>
+                                                    </div>
+                                                {% endif %}
+                                            {% endif %}
+                                            <div class="d-flex justify-content-end align-items-center mt-auto gap-2">
+                                                <span class="btn btn-sm btn-secondary" disabled>Trip Completed</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
                         </div>
-                    {% empty %}
-                        <div class="col-12">
-                            <p class="text-muted">No carpool posts yet. Create the first one!</p>
-                        </div>
-                    {% endfor %}
+                    </div>
+                    {% endif %}
                 </div>
 
-                <div class="filters-box">
-                    <p> Filters </p>
+                <div class="filters-box px-3 pt-3" style="width: 200px; flex-shrink: 0;">
+                    <form method="get" action="{% url 'driver dashboard' %}">
+                        <h6>Filters</h6>
+                        <input type="hidden" name="q" value="{{ request.GET.q }}">
+                        
+                        <div class="mb-4 mt-3">
+                            <label class="form-label">Date:</label>
+                            <input type="date" name="date" class="form-control" value="{{ request.GET.date }}">
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label class="form-label">Pickup Time:</label>
+                            <input type="time" name="pickup_time" class="form-control" value="{{ request.GET.pickup_time }}">
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label class="form-label">Dropoff Time:</label>
+                            <input type="time" name="dropoff_time" class="form-control" value="{{ request.GET.dropoff_time }}">
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary w-100 mb-2">Apply Filters</button>
+                        <a href="{% url 'driver dashboard' %}" class="btn btn-outline-secondary btn-sm w-100">Clear</a>
+                    </form>
                 </div>
-
             </div>
         </div>
 
 
         <button class="side-panel-toggle" type="button">
+        <span id="msg-badge" class="notification-badge" style="display:none;">●</span>
+        <span id="request-badge" class="notification-badge" style="display:none; background:red; margin-right:5px;">●</span>
         <span class="material-symbols-outlined sp-icon-open" style="font-size:48px;">menu</span>
         <span class="material-symbols-outlined sp-icon-close" style="font-size:48px;">menu</span>
         </button>
 
         <div class="side-panel">
             <div class="d-grid gap-2">
-                <a href="{% url 'driver_profile' %}" role="button"  class="btn btn-primary btn-lg btn-block" style="margin-top: 5px;">Driver Profile</a>
-                <a href="{% url 'message_list' %}" class="btn btn-primary btn-block btn-lg py-2">Messaging</a>
-                <a href="" class="btn btn-primary btn-block btn-lg py-2" style="margin-top: 5px" >History</a>
-                <a href="{% url 'account_logout' %}" class="btn btn-primary btn-block btn-lg py-2" style="margin-top: 5px" >Log Out</a>
+                <a href="{% url 'driver_profile' %}" role="button" class="btn btn-primary btn-lg btn-block" style="margin-top: 5px;">Driver Profile</a>
+                <a href="{% url 'message_list' %}" class="btn btn-primary btn-block btn-lg py-2" style="margin-top: 5px">Messaging</a>
+                <a href="{% url 'account_logout' %}" class="btn btn-primary btn-block btn-lg py-2" style="margin-top: 5px">Log Out</a>
             </div>
         </div>
     </div>
 
     <div class="modal fade" id="createPostModal" tabindex="-1">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Create Carpool Post</h5>
@@ -131,13 +210,46 @@
                     <div class="modal-body">
                         {% csrf_token %}
                         <div class="mb-3">
-                            <label class="form-label">Description</label>
-                            {{ form.text }}
+                            <label class="form-label">How would you like to name this carpool trip?</label>
+                                {{ form.name }}
+                            </div>
+                        <div class = "mb-3">
+                            <label class="form-label">What date is this trip occurring?</label>
+                                {{ form.date }}
                         </div>
+                        <div class="mb-3">
+                                <label class="form-label">Where will you pick riders up? Enter either a valid address or recognizable name of the place.</label>
+                                {{ form.pickup }}
+                        </div> 
+
+                             <div class="mb-3">
+                                <label class="form-label">What time is pickup?</label>
+                                {{ form.pickup_time }}
+                        </div>   
+                        <div class="mb-3">
+                                <label class="form-label">Where will you be going? Enter either a valid address or recognizable name of the place.</label>
+                                {{ form.dropoff }}
+                        </div>    
+                   
+                        <div class="mb-3">
+                                <label class="form-label">What time is dropoff?</label>
+                                {{ form.dropoff_time }}
+                        </div>  
+
+                        
+
+                    
+        
+                        <div class="mb-3">
+                            <label class="form-label">Further Description</label>
+                            {{ form.notes }}
+                        </div>   
+                        
                         <div class="mb-3">
                             <label class="form-label">Attach Image (optional)</label>
                             {{ form.image }}
                         </div>
+
                         <div class="mb-3">
                             <label class="form-label">Who can see the image?</label>
                             {{ form.image_visibility }}
@@ -234,6 +346,86 @@
         });
     });
     </script>
+
+    <script>
+        function waitForElement(id, callback) {
+            const check = setInterval(() => {
+                const el = document.getElementById(id);
+                if (el) {
+                    clearInterval(check);
+                    callback(el);
+                }
+            }, 100);
+        }
+    </script>
+
+<script>
+    async function checkUnreadMessages() {
+        try {
+            const response = await fetch("/messages/unread-count/", {
+                headers: { "X-Requested-With": "XMLHttpRequest" }
+            });
+            if (!response.ok) return;
+            const data = await response.json();
+    
+            waitForElement("msg-badge", (badge) => {
+                if (data.unread > 0) {
+                    badge.style.display = "flex";
+                } else {
+                    badge.style.display = "none";
+                }
+            });
+    
+        } catch (e) {
+            console.error("Error checking unread messages:", e);
+        }
+    }
+    
+    document.addEventListener("DOMContentLoaded", function () {
+        checkUnreadMessages();
+        setInterval(checkUnreadMessages, 10000);
+    });
+</script>
+
+<script>
+    async function checkRideRequests() {
+        try {
+            const response = await fetch("/ride-requests/unseen-requests/", {
+                headers: {"X-Requested-With": "XMLHttpRequest"}
+            });
+            if (!response.ok) return;
+            const data = await response.json();
+
+            document.querySelectorAll(".post-notification-badge").forEach(b => {
+                b.style.display = "none";
+            });
+            data.post_ids.forEach(id => {
+                const badge = document.getElementById(`request-badge-${id}`);
+                if (badge) badge.style.display = "flex";
+            });
+
+        } catch (e) {
+            console.error("Error checking ride requests:", e);
+        }
+    }
+    
+    document.addEventListener("DOMContentLoaded", function () {
+        checkRideRequests();
+        setInterval(checkRideRequests, 8000);
+    });
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const toggle = document.querySelector(".side-panel-toggle");
+        if (toggle) {
+            toggle.addEventListener("click", () => {
+                const reqBadge = document.getElementById("request-badge");
+                if (reqBadge) reqBadge.style.display = "none";
+            });
+        }
+    });
+</script>
 
 </body>
 </html>

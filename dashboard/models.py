@@ -10,8 +10,14 @@ class CarpoolPost(models.Model):
         ('riders', 'Riders Only'),
     ]
     
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
-    text = models.TextField()
+    author = models.ForeignKey(User, on_delete=models.CASCADE, max_length=100)
+    name = models.TextField(default="", blank=False)
+    dropoff = models.TextField(default="",blank=False)
+    pickup = models.TextField(default="", blank=False)
+    date = models.TextField(default="", blank=False)
+    notes = models.TextField(default="", blank=True)
+    pickup_time = models.TimeField()
+    dropoff_time = models.TimeField()
     image = models.ImageField(upload_to='carpool_posts/', blank=True, null=True)
     image_visibility = models.CharField(max_length=10, choices=VISIBILITY_CHOICES, default='all')
     created_at = models.DateTimeField(auto_now_add=True)
@@ -41,3 +47,18 @@ class Flag(models.Model):
 
     def __str__(self):
         return f"{self.flagged_by.username} flagged {self.post.id} ({self.reason})"
+
+class Review(models.Model):
+    post = models.ForeignKey(CarpoolPost, on_delete=models.CASCADE, related_name='reviews')
+    reviewer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reviews_given')
+    driver = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reviews_received')
+    rating = models.IntegerField(choices=[(i, i) for i in range(1, 6)])
+    description = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        unique_together = ('post', 'reviewer')  # Prevent duplicate reviews
+        ordering = ['-created_at']
+    
+    def __str__(self):
+        return f"{self.reviewer.username} -> {self.driver.username} ({self.rating}/5)"
